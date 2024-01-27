@@ -114,6 +114,20 @@ func channelsListByUsername(service *youtube.Service, part string, forUsername s
 		response.Items[0].Statistics.ViewCount))
 }
 
+func videosListByName(service *youtube.Service, part string) {
+	parr_list := []string{"snippet"}
+	call := service.Search.List(parr_list).Q("persona 5 whims of fate").Type("video").Order("viewCount")
+	response, err := call.Do()
+	handleError(err, "")
+	for _, video := range response.Items {
+		fmt.Printf("%+v\n", video.Id.VideoId)
+		call := service.Videos.List(parr_list).Id(video.Id.VideoId)
+		response, err := call.Do()
+		handleError(err, "")
+		fmt.Printf("%+v\n", response.Items[0].Snippet.Title)
+	}
+}
+
 func main() {
 	ctx := context.Background()
 
@@ -133,11 +147,14 @@ func main() {
 
 	handleError(err, "Error creating YouTube client")
 	//http://localhost/?state=state-token&code=4/0AfJohXlnVNVlvHpDexdL4poPI0_edIsOo5nkxJVnLXEVrJzANx3ueeetVDh7-MmzFOrl4w&scope=https://www.googleapis.com/auth/youtube.readonly
-	channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
-
+	//channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
+	videosListByName(service, "persona 5 whims of fate")
 	/*
 		TODO:
 		* Melhorar Sistema de login
+			* Inicia um servidor que vai receber o endpoint do auth para conseguir pegar o token
+			* Matar servidor sem matar o processo
+			* Fazer cache do token de acesso
 		* Fazer funciona que lista videos por texto de pesquisa
 		* Fazer integração com youtube-dl para download de audio
 		* Fazer UI baseado no mocg

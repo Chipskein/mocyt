@@ -134,4 +134,14 @@ func main() {
 	handleError(err, "Error creating YouTube client")
 	//http://localhost/?state=state-token&code=4/0AfJohXlnVNVlvHpDexdL4poPI0_edIsOo5nkxJVnLXEVrJzANx3ueeetVDh7-MmzFOrl4w&scope=https://www.googleapis.com/auth/youtube.readonly
 	channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
+
+	/*
+		TODO:
+		* Melhorar Sistema de login
+		* Fazer funciona que lista videos por texto de pesquisa
+		* Fazer integração com youtube-dl para download de audio
+		* Fazer UI baseado no mocg
+
+	*/
+
 }

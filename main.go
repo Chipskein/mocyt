@@ -114,17 +114,34 @@ func channelsListByUsername(service *youtube.Service, part string, forUsername s
 		response.Items[0].Statistics.ViewCount))
 }
 
-func videosListByName(service *youtube.Service, part string) {
+type Video struct {
+	Id          string
+	Title       string
+	Duration    int
+	ChannelId   string
+	ChannelName string
+	URL         string
+}
+
+func videosListByName(service *youtube.Service, searchTxt string) {
 	parr_list := []string{"snippet"}
-	call := service.Search.List(parr_list).Q("persona 5 whims of fate").Type("video").Order("viewCount")
+	//var orderBy = "viewCount"
+	var searchType = "video"
+	call := service.Search.List(parr_list).Q(searchTxt).Type(searchType) //.Order(orderBy)
 	response, err := call.Do()
 	handleError(err, "")
 	for _, video := range response.Items {
-		fmt.Printf("%+v\n", video.Id.VideoId)
-		call := service.Videos.List(parr_list).Id(video.Id.VideoId)
+		var id = video.Id.VideoId
+		call := service.Videos.List([]string{"snippet", "contentDetails"}).Id(id)
 		response, err := call.Do()
 		handleError(err, "")
-		fmt.Printf("%+v\n", response.Items[0].Snippet.Title)
+		var title = response.Items[0].Snippet.Title
+		var channelId = response.Items[0].Snippet.ChannelId
+		var channelName = response.Items[0].Snippet.ChannelTitle
+		var thumbnail = response.Items[0].Snippet.Thumbnails.Default.Url
+		var duration = response.Items[0].ContentDetails.Duration
+		fmt.Printf("%s\n %s\n %s\n %s\n %s\n %s\n _______\n", id, title, thumbnail, duration, channelId, channelName)
+		//fmt.Printf("%+v\n", response.Items[0].Snippet)
 	}
 }
 
@@ -148,7 +165,7 @@ func main() {
 	handleError(err, "Error creating YouTube client")
 	//http://localhost/?state=state-token&code=4/0AfJohXlnVNVlvHpDexdL4poPI0_edIsOo5nkxJVnLXEVrJzANx3ueeetVDh7-MmzFOrl4w&scope=https://www.googleapis.com/auth/youtube.readonly
 	//channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
-	videosListByName(service, "persona 5 whims of fate")
+	videosListByName(service, "Persona 5 whims of fate")
 	/*
 		TODO:
 		* Melhorar Sistema de login

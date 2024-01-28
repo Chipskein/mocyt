@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 
@@ -140,7 +141,8 @@ func videosListByName(service *youtube.Service, searchTxt string) {
 		var channelName = response.Items[0].Snippet.ChannelTitle
 		var thumbnail = response.Items[0].Snippet.Thumbnails.Default.Url
 		var duration = response.Items[0].ContentDetails.Duration
-		fmt.Printf("%s\n %s\n %s\n %s\n %s\n %s\n _______\n", id, title, thumbnail, duration, channelId, channelName)
+		var URL = fmt.Sprintf("https://www.youtube.com/watch?v=%s", id)
+		fmt.Printf("%s\n %s\n %s\n %s\n %s\n %s\n %s\n _______\n", id, title, thumbnail, duration, channelId, channelName, URL)
 		//fmt.Printf("%+v\n", response.Items[0].Snippet)
 	}
 }
@@ -177,5 +179,48 @@ func main() {
 		* Fazer UI baseado no mocg
 
 	*/
+	//	var yt_test = ""
+	//	_ := fmt.Sprintf("youtube-dl -f bestaudio 'https://www.youtube.com/watch?v=LRK6hjBZfLs' -o - 2>/dev/null | ffplay -nodisp -autoexit -i - &>/dev/null", yt_test)
+	//fmt.Println(url)
+	devnull, err := os.OpenFile(os.DevNull, os.O_WRONLY, 0755)
+	path, err := exec.LookPath("youtube-dl")
+	if err != nil {
+		log.Fatal("LookPath: ", err)
+	}
+	fmt.Println(path)
+	var commandArgs = []string{
+		"-f",
+		"bestaudio",
+		"https://www.youtube.com/watch?v=LRK6hjBZfLs",
+		"-o",
+		"-"}
+
+	cmd := exec.Command(path, commandArgs...)
+	cmd.Stderr = os.Stderr
+	pipe, err := cmd.StdoutPipe()
+	if err != nil {
+		log.Fatal("Pipe: ", err)
+	}
+	path, err = exec.LookPath("ffplay")
+	if err != nil {
+		log.Fatal("LookPath: ", err)
+	}
+	fmt.Println(path)
+	cmdArguments := []string{
+		"-nodisp",
+		"-autoexit",
+		"-i",
+		"-"}
+	cmd2 := exec.Command(path, cmdArguments...)
+	cmd2.Stdin = pipe
+	cmd2.Stdout = devnull
+	cmd2.Stderr = os.Stderr
+	fmt.Println(cmd.String())
+	fmt.Println(cmd2.String())
+
+	cmd.Start()
+	cmd2.Start()
+	cmd.Wait()
+	cmd2.Wait()
 
 }

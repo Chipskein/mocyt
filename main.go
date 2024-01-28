@@ -201,6 +201,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Pipe: ", err)
 	}
+
+	//TESTAR COM VLC golang-vlc
 	path, err = exec.LookPath("ffplay")
 	if err != nil {
 		log.Fatal("LookPath: ", err)

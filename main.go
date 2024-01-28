@@ -5,7 +5,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -16,7 +15,6 @@ import (
 
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 	"google.golang.org/api/youtube/v3"
 )
 
@@ -148,26 +146,28 @@ func videosListByName(service *youtube.Service, searchTxt string) {
 }
 
 func main() {
-	ctx := context.Background()
+	/*
+		ctx := context.Background()
 
-	b, err := ioutil.ReadFile("client_secret.json")
-	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
-	}
+		b, err := ioutil.ReadFile("client_secret.json")
+		if err != nil {
+			log.Fatalf("Unable to read client secret file: %v", err)
+		}
 
-	// If modifying these scopes, delete your previously saved credentials
-	// at ~/.credentials/youtube-go-quickstart.json
-	config, err := google.ConfigFromJSON(b, youtube.YoutubeReadonlyScope)
-	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
-	client := getClient(ctx, config)
-	service, err := youtube.New(client)
+		// If modifying these scopes, delete your previously saved credentials
+		// at ~/.credentials/youtube-go-quickstart.json
+		config, err := google.ConfigFromJSON(b, youtube.YoutubeReadonlyScope)
+		if err != nil {
+			log.Fatalf("Unable to parse client secret file to config: %v", err)
+		}
+		client := getClient(ctx, config)
+		service, err := youtube.New(client)
 
-	handleError(err, "Error creating YouTube client")
-	//http://localhost/?state=state-token&code=4/0AfJohXlnVNVlvHpDexdL4poPI0_edIsOo5nkxJVnLXEVrJzANx3ueeetVDh7-MmzFOrl4w&scope=https://www.googleapis.com/auth/youtube.readonly
-	//channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
-	videosListByName(service, "Persona 5 whims of fate")
+		handleError(err, "Error creating YouTube client")
+		//http://localhost/?state=state-token&code=4/0AfJohXlnVNVlvHpDexdL4poPI0_edIsOo5nkxJVnLXEVrJzANx3ueeetVDh7-MmzFOrl4w&scope=https://www.googleapis.com/auth/youtube.readonly
+		//channelsListByUsername(service, "snippet,contentDetails,statistics", "GoogleDevelopers")
+		videosListByName(service, "Persona 5 whims of fate")
+	*/
 	/*
 		TODO:
 		* Melhorar Sistema de login
@@ -177,7 +177,8 @@ func main() {
 		* Fazer funciona que lista videos por texto de pesquisa
 		* Fazer integração com youtube-dl para download de audio
 		* Fazer UI baseado no mocg
-
+		Conferir JSON IPC do mpv
+		https://github.com/mpv-player/mpv/blob/master/DOCS/man/ipc.rst
 	*/
 	//	var yt_test = ""
 	//	_ := fmt.Sprintf("youtube-dl -f bestaudio 'https://www.youtube.com/watch?v=LRK6hjBZfLs' -o - 2>/dev/null | ffplay -nodisp -autoexit -i - &>/dev/null", yt_test)
@@ -202,17 +203,14 @@ func main() {
 		log.Fatal("Pipe: ", err)
 	}
 
-	//TESTAR COM VLC golang-vlc
-	path, err = exec.LookPath("ffplay")
+	path, err = exec.LookPath("mpv")
 	if err != nil {
 		log.Fatal("LookPath: ", err)
 	}
 	fmt.Println(path)
 	cmdArguments := []string{
-		"-nodisp",
-		"-autoexit",
-		"-i",
-		"-"}
+		"-",
+		"-input-ipc-server=/tmp/mpv-socket"}
 	cmd2 := exec.Command(path, cmdArguments...)
 	cmd2.Stdin = pipe
 	cmd2.Stdout = devnull

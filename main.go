@@ -16,6 +16,7 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"google.golang.org/api/youtube/v3"
+	//"google.golang.org/api/youtube/v3"
 )
 
 const missingClientSecretsMessage = `Please configure OAuth 2.0`
@@ -144,7 +145,6 @@ func videosListByName(service *youtube.Service, searchTxt string) {
 		//fmt.Printf("%+v\n", response.Items[0].Snippet)
 	}
 }
-
 func main() {
 	/*
 		ctx := context.Background()
@@ -174,8 +174,6 @@ func main() {
 			* Inicia um servidor que vai receber o endpoint do auth para conseguir pegar o token
 			* Matar servidor sem matar o processo
 			* Fazer cache do token de acesso
-		* Fazer funciona que lista videos por texto de pesquisa
-		* Fazer integração com youtube-dl para download de audio
 		* Fazer UI baseado no mocg
 		Conferir JSON IPC do mpv
 		https://github.com/mpv-player/mpv/blob/master/DOCS/man/ipc.rst

@@ -1,6 +1,7 @@
 package mpv
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -12,10 +13,50 @@ import (
 // https://github.com/mpv-player/mpv/blob/master/DOCS/man/ipc.rst
 const DEFAULT_MPV_SOCKET_PATH = "/tmp/mpv-socket"
 
+// Set PlayBack Speed  Min 0 Max 5
+func SetSpeed(speed float32) error {
+	if speed < 0 || speed > 5 {
+		return errors.New("Speed value is invalid Should be a Float32 between 0 and 5\n")
+	}
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "speed", %f]}`+"\n", speed)
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func SetVolume(volume int) error {
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "volume", %d]}`+"\n", volume)
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func Stop() error {
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	var cmd = `{ "command": ["quit"]}` + "\n"
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func Pause(pause bool) error {

@@ -4,7 +4,6 @@ import (
 	"chipskein/yta-cli/internals/mpv"
 	"chipskein/yta-cli/internals/ytdlp"
 	"log"
-	"time"
 )
 
 func main() {
@@ -20,17 +19,23 @@ func main() {
 		}
 	}()
 	go func() {
-		log.Println("caiu aqui")
-		time.Sleep(time.Second * 10)
-		err := mpv.Pause(true)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		time.Sleep(time.Second * 10)
-		err = mpv.Pause(false)
-		if err != nil {
-			log.Fatalln(err)
-		}
+		//time.Sleep(time.Second * 10)
+		/*
+			err := mpv.Stop()
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			err = mpv.Pause(true)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			time.Sleep(time.Second * 10)
+			err = mpv.Pause(false)
+			if err != nil {
+				log.Fatalln(err)
+			}
+		*/
 	}()
 	for {
 

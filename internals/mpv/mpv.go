@@ -1,17 +1,24 @@
 package mpv
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // Conferir JSON IPC do mpv
 // https://github.com/mpv-player/mpv/blob/master/DOCS/man/ipc.rst
 const DEFAULT_MPV_SOCKET_PATH = "/tmp/mpv-socket"
+
+type IpcJSONMVPResponse struct {
+	Data  float32 `json:"data"`
+	Error string  `json:"error"`
+}
 
 // Set PlayBack Speed  Min 0 Max 5
 func SetSpeed(speed float32) error {
@@ -29,20 +36,48 @@ func SetSpeed(speed float32) error {
 	if err != nil {
 		return err
 	}
+	//FIX Broken Pipe Error
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
+func GetPlayBackTimeMicroSecond() (time.Duration, error) {
+
+	return time.Microsecond, nil
+}
+func GetVolume() (float32, error) {
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return 0, err
+	}
+	defer c.Close()
+
+	var cmd = `{ "command": ["get_property", "volume"]}` + "\n"
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return 0, err
+	}
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
+	return res.Data, err
+}
 func SetVolume(volume int) error {
+	if volume < 0 || volume > 100 {
+		return errors.New("Volume is invalid Should be a int between 0 and 100\n")
+	}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
 	if err != nil {
 		return err
 	}
 	defer c.Close()
-
 	var cmd = fmt.Sprintf(`{ "command": ["set_property", "volume", %d]}`+"\n", volume)
 	_, err = c.Write([]byte(cmd))
 	if err != nil {
 		return err
 	}
+	//FIX Broken Pipe Error
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Stop() error {
@@ -57,6 +92,9 @@ func Stop() error {
 	if err != nil {
 		return err
 	}
+	//FIX Broken Pipe Error
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Pause(pause bool) error {
@@ -71,6 +109,9 @@ func Pause(pause bool) error {
 	if err != nil {
 		return err
 	}
+	//FIX Broken Pipe Error
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Play(startDownloadStreamCMD *exec.Cmd, stdin io.ReadCloser) error {

@@ -19,19 +19,8 @@ func main() {
 			log.Fatalln(err)
 		}
 	}()
-	go func() {
-		time.Sleep(time.Second * 10)
-		err := mpv.Pause(true)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		time.Sleep(time.Second * 10)
-		err = mpv.Pause(false)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}()
 	for {
-
+		time.Sleep(time.Second * 10)
+		//testar outras coisas
 	}
 }

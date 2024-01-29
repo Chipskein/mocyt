@@ -8,7 +8,6 @@ import (
 	"net"
 	"os"
 	"os/exec"
-	"time"
 )
 
 // Conferir JSON IPC do mpv
@@ -41,9 +40,23 @@ func SetSpeed(speed float32) error {
 	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
-func GetPlayBackTimeMicroSecond() (time.Duration, error) {
-
-	return time.Microsecond, nil
+func GetPlayBackTimeMicroSecond() (int, error) {
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return 0, err
+	}
+	defer c.Close()
+	var cmd = `{ "command": ["get_property", "playback-time"]}` + "\n"
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return 0, err
+	}
+	var res = &IpcJSONMVPResponse{}
+	err = json.NewDecoder(c).Decode(res)
+	if err != nil {
+		return 0, err
+	}
+	return int(res.Data), nil
 }
 func GetVolume() (float32, error) {
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
@@ -59,6 +72,9 @@ func GetVolume() (float32, error) {
 	}
 	var res = &IpcJSONMVPResponse{}
 	err = json.NewDecoder(c).Decode(res)
+	if err != nil {
+		return 0, err
+	}
 	return res.Data, err
 }
 func SetVolume(volume int) error {

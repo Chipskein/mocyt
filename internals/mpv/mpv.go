@@ -3,6 +3,7 @@ package mpv
 import (
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"os/exec"
 )
@@ -17,7 +18,18 @@ func SetVolume(volume int) error {
 func Stop() error {
 	return nil
 }
-func Pause() error {
+func Pause(pause bool) error {
+	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "pause", %t]}`+"\n", pause)
+	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func Play(startDownloadStreamCMD *exec.Cmd, stdin io.ReadCloser) error {

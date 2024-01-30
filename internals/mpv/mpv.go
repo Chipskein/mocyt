@@ -19,59 +19,46 @@ type IpcJSONMVPResponse struct {
 	Error string  `json:"error"`
 }
 
-// Set PlayBack Speed  Min 0 Max 5
-func SetSpeed(speed float32) error {
-	if speed < 0 || speed > 5 {
-		return errors.New("Speed value is invalid Should be a Float32 between 0 and 5\n")
-	}
+func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
+	var res = &IpcJSONMVPResponse{}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
 	if err != nil {
-		return err
+		return res, err
 	}
 	defer c.Close()
-
-	var cmd = fmt.Sprintf(`{ "command": ["set_property", "speed", %f]}`+"\n", speed)
 	_, err = c.Write([]byte(cmd))
+	if err != nil {
+		return res, err
+	}
+	err = json.NewDecoder(c).Decode(res)
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
+func SetSpeed(speed float32) error {
+	if speed < 0 || speed > 5 {
+		return errors.New("speed value is invalid Should be a Float32 between 0 and 5")
+	}
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "speed", %f]}`+"\n", speed)
+	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err
 	}
-	//FIX Broken Pipe Error
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func GetPlayBackTimeMicroSecond() (int, error) {
-	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
-	if err != nil {
-		return 0, err
-	}
-	defer c.Close()
 	var cmd = `{ "command": ["get_property", "playback-time"]}` + "\n"
-	_, err = c.Write([]byte(cmd))
-	if err != nil {
-		return 0, err
-	}
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
+	res, err := sendIPCCommand(cmd)
 	if err != nil {
 		return 0, err
 	}
 	return int(res.Data), nil
 }
 func GetVolume() (float32, error) {
-	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
-	if err != nil {
-		return 0, err
-	}
-	defer c.Close()
-
 	var cmd = `{ "command": ["get_property", "volume"]}` + "\n"
-	_, err = c.Write([]byte(cmd))
-	if err != nil {
-		return 0, err
-	}
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
+	res, err := sendIPCCommand(cmd)
 	if err != nil {
 		return 0, err
 	}
@@ -79,55 +66,29 @@ func GetVolume() (float32, error) {
 }
 func SetVolume(volume int) error {
 	if volume < 0 || volume > 100 {
-		return errors.New("Volume is invalid Should be a int between 0 and 100\n")
+		return errors.New("volume is invalid Should be a int between 0 and 100")
 	}
-	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
-	if err != nil {
-		return err
-	}
-	defer c.Close()
 	var cmd = fmt.Sprintf(`{ "command": ["set_property", "volume", %d]}`+"\n", volume)
-	_, err = c.Write([]byte(cmd))
+	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err
 	}
-	//FIX Broken Pipe Error
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Stop() error {
-	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
-	if err != nil {
-		return err
-	}
-	defer c.Close()
-
 	var cmd = `{ "command": ["quit"]}` + "\n"
-	_, err = c.Write([]byte(cmd))
+	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err
 	}
-	//FIX Broken Pipe Error
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Pause(pause bool) error {
-	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
-	if err != nil {
-		return err
-	}
-	defer c.Close()
-
 	var cmd = fmt.Sprintf(`{ "command": ["set_property", "pause", %t]}`+"\n", pause)
-	_, err = c.Write([]byte(cmd))
+	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err
 	}
-	//FIX Broken Pipe Error
-	var res = &IpcJSONMVPResponse{}
-	err = json.NewDecoder(c).Decode(res)
 	return nil
 }
 func Play(startDownloadStreamCMD *exec.Cmd, stdin io.ReadCloser) error {

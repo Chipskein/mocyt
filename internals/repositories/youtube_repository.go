@@ -31,7 +31,7 @@ type Video struct {
 	URL         string
 }
 
-func ListVideos(ytr *YoutubeRepository, searchTxt string) ([]Video, error) {
+func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]Video, error) {
 	var videos []Video
 	service := ytr.Service
 	if service == nil {
@@ -154,6 +154,13 @@ func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, err
 		return result, err
 	}
 	client := getClient(ctx, config)
+	_, err = os.Stat("token.json")
+	if err == os.ErrNotExist {
+		log.Println("Token file does not exist, creating one")
+		token := getTokenFromWeb(config)
+		saveToken("token.json", token)
+	}
+
 	service, err := youtube.New(client)
 	result.Service = service
 	return result, nil

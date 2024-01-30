@@ -1,28 +1,6 @@
 package main
 
-import (
-	"chipskein/yta-cli/internals/mpv"
-	"chipskein/yta-cli/internals/ytdlp"
-	"log"
-	"time"
-)
-
 func main() {
-	go func() {
-		var test = "https://www.youtube.com/watch?v=78ZLZfvzBNM"
-		cmd, pipe, err := ytdlp.DownloadVideo(test)
-		if err != nil {
-			log.Fatalln(err)
-		}
-		err = mpv.Play(cmd, pipe)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}()
-	for {
-		time.Sleep(time.Second * 10)
-		//testar outras coisas
-
-		//nuu cadê o Brunao
-	}
+	//http://localhost/?state=state-token&code=4/0AfJohXm9mjnntF8VCqSyjHinyRBa2gZfg8qA9Jypq1knNqin9yainPFldFn5X764xzNsPw&scope=https://www.googleapis.com/auth/youtube.readonly
+	//4/0AfJohXm9mjnntF8VCqSyjHinyRBa2gZfg8qA9Jypq1knNqin9yainPFldFn5X764xzNsPw
 }

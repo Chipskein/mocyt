@@ -19,21 +19,39 @@ type TUI struct {
 	uiEvents         <-chan tui.Event
 	progressBar      *widgets.Gauge
 	volumeBar        *widgets.Gauge
-	filelist         *widgets.List
+	videolist        *widgets.List
+	queuelist        *widgets.List
 	p                *widgets.Paragraph
 	//repo             *repositories.LocalRepository
 	//player           *player.PlayerController
 }
 
 func (t *TUI) RenderFileList() {
-	filelist := widgets.NewList()
-	filelist.Rows = []string{} //t.repo.ListFiles()
-	filelist.Title = ""        //t.repo.CURRENT_DIRECTORY
-	filelist.TitleStyle.Fg = tui.ColorWhite
-	filelist.SelectedRowStyle.Fg = tui.ColorBlack
-	filelist.SelectedRowStyle.Bg = tui.ColorWhite
-	filelist.TextStyle.Fg = tui.ColorWhite
-	t.filelist = filelist
+	videolist := widgets.NewList()
+	videolist.Rows = []string{
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)",
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)",
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)",
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)",
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)"}
+	videolist.Title = "persona 5 whims of fate" //t.repo.CURRENT_DIRECTORY
+	videolist.TitleStyle.Fg = tui.ColorWhite
+	videolist.SelectedRowStyle.Fg = tui.ColorBlack
+	videolist.SelectedRowStyle.Bg = tui.ColorWhite
+	videolist.TextStyle.Fg = tui.ColorWhite
+	t.videolist = videolist
+}
+func (t *TUI) RenderQueueList() {
+	queuelist := widgets.NewList()
+	queuelist.Rows = []string{
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)",
+		"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate (Bfr's OST)"}
+	queuelist.Title = "Playback Queue" //t.repo.CURRENT_DIRECTORY
+	queuelist.TitleStyle.Fg = tui.ColorWhite
+	queuelist.SelectedRowStyle.Fg = tui.ColorBlack
+	queuelist.SelectedRowStyle.Bg = tui.ColorWhite
+	queuelist.TextStyle.Fg = tui.ColorWhite
+	t.queuelist = queuelist
 }
 func (t *TUI) RenderVolumeMixer() {
 	volumeBar := widgets.NewGauge()
@@ -66,13 +84,11 @@ func (t *TUI) SetupGrid() {
 
 	grid.Set(
 		tui.NewRow(1.6/2,
-			tui.NewCol(2/2,
-				t.filelist),
-		),
+			tui.NewCol(1.5/2, t.videolist),
+			tui.NewCol(0.5/2, t.queuelist)),
 		tui.NewRow(0.2/2,
 			tui.NewCol(1.5/2, t.p),
-			tui.NewCol(0.5/2, t.volumeBar),
-		),
+			tui.NewCol(0.5/2, t.volumeBar)),
 		tui.NewRow(0.18/2, t.progressBar),
 	)
 	t.grid = grid
@@ -86,23 +102,23 @@ func (t *TUI) HandleTUIEvents() {
 			case "q", "<C-c>":
 				return
 			case "<Enter>":
-				t.HandleSelectedFile(t.filelist.Rows[t.filelist.SelectedRow])
+				//t.HandleSelectedFile(t.filelist.Rows[t.filelist.SelectedRow])
 			case "h":
 				//t.repo.ShowHiddenFiles = !t.repo.ShowHiddenFiles
 				//t.filelist.Rows = t.repo.ListFiles()
 				t.RenderUI()
 			case "<Down>", "j":
-				t.filelist.ScrollDown()
+				t.videolist.ScrollDown()
 			case "<Up>", "k":
-				t.filelist.ScrollUp()
+				t.videolist.ScrollUp()
 			case "<End>":
-				t.filelist.ScrollBottom()
+				t.videolist.ScrollBottom()
 			case "<Home>":
-				t.filelist.ScrollTop()
+				t.videolist.ScrollTop()
 			case "<PageDown>":
-				t.filelist.ScrollHalfPageDown()
+				t.videolist.ScrollHalfPageDown()
 			case "<PageUp>":
-				t.filelist.ScrollHalfPageUp()
+				t.videolist.ScrollHalfPageUp()
 			case "<Space>":
 				/*
 					if t.player != nil {
@@ -188,13 +204,7 @@ func (t *TUI) HandleTUIEvents() {
 }
 func (t *TUI) HandleSelectedFile(filename string) {
 	var persistInfo = false
-	if filename == "../" {
-		//parentPath := path.Dir(t.repo.CURRENT_DIRECTORY)
-		//t.repo.CURRENT_DIRECTORY = "."
-		t.filelist.Rows = []string{} //t.repo.ListFiles()
-		t.filelist.Title = ""        //t.repo.CURRENT_DIRECTORY
-		return
-	}
+
 	//var file = t.repo.Files[filename]
 	//if file.IsADirectory {
 	//	t.repo.CURRENT_DIRECTORY = file.FullPath
@@ -241,10 +251,11 @@ func StartUI(CURRENT_DIRECTORY string, DEFAULT_DIRECTORY string, ShowHiddenFiles
 	//t.repo = &repositories.LocalRepository{CURRENT_DIRECTORY: CURRENT_DIRECTORY, DEFAULT_DIRECTORY: DEFAULT_DIRECTORY, ShowHiddenFiles: ShowHiddenFiles}
 
 	go t.RenderFileList()
+	go t.RenderQueueList()
 	go t.RenderVolumeMixer()
 	go t.RenderProgressBar()
 	go t.RenderSongInfo()
-	wg.Add(4)
+	wg.Add(5)
 	wg.Done()
 	time.Sleep(time.Millisecond * 500)
 	t.SetupGrid()

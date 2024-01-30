@@ -9,19 +9,19 @@ import (
 var defaultText = fmt.Sprintf("Time:%s  Duration:%s", "0s", "0s")
 
 type PlaybackInfo struct {
-	root *widgets.Paragraph
+	Root *widgets.Paragraph
 }
 
 func (p *PlaybackInfo) Reset() {
-	if p.root != nil {
-		p.root.Text = defaultText
+	if p.Root != nil {
+		p.Root.Text = defaultText
 	}
 }
 func (p *PlaybackInfo) Update(text string) {
-	if p.root.Text != "" {
-		p.root.Text = text
+	if p.Root.Text != "" {
+		p.Root.Text = text
 	} else {
-		p.root.Text = defaultText
+		p.Root.Text = defaultText
 	}
 }
 
@@ -32,5 +32,5 @@ func InitPlaybackInfo(text string) *PlaybackInfo {
 	} else {
 		p.Text = defaultText
 	}
-	return &PlaybackInfo{root: p}
+	return &PlaybackInfo{Root: p}
 }

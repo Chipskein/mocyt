@@ -19,7 +19,8 @@ import (
 )
 
 type YoutubeRepository struct {
-	Service *youtube.Service
+	Service     *youtube.Service
+	VideosCache map[string]Video
 }
 
 type Video struct {
@@ -163,5 +164,6 @@ func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, err
 
 	service, err := youtube.New(client)
 	result.Service = service
+	result.VideosCache = make(map[string]Video)
 	return result, nil
 }

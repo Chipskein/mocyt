@@ -6,9 +6,21 @@ import (
 )
 
 type VideoList struct {
-	root *widgets.List
+	Root *widgets.List
 }
 
+func (v *VideoList) Update(videos []string, title string) {
+	v.Root.Rows = videos
+	v.Root.Title = title
+}
+func (v *VideoList) Reset() {
+	v.Root.Rows = []string{"Press '/' to open searchBox and search for a video"}
+	v.Root.Title = "Video List"
+}
+func (v *VideoList) Clean() {
+	v.Root.Rows = []string{}
+	v.Root.Title = ""
+}
 func InitVideoList() *VideoList {
 	videolist := widgets.NewList()
 	videolist.Rows = []string{"Press '/' to open searchBox and search for a video"}
@@ -17,5 +29,5 @@ func InitVideoList() *VideoList {
 	videolist.SelectedRowStyle.Fg = tui.ColorBlack
 	videolist.SelectedRowStyle.Bg = tui.ColorWhite
 	videolist.TextStyle.Fg = tui.ColorWhite
-	return &VideoList{root: videolist}
+	return &VideoList{Root: videolist}
 }

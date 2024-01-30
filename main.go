@@ -22,5 +22,7 @@ func main() {
 	for {
 		time.Sleep(time.Second * 10)
 		//testar outras coisas
+
+		//nuu cadê o Brunao
 	}
 }

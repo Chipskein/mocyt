@@ -5,12 +5,11 @@ import (
 )
 
 type Grid struct {
-	Root           *tui.Grid
-	Videolist      *VideoList
-	Plabackinfo    *PlaybackInfo
-	Volumemixer    *VolumeMixer
-	Progressbar    *ProgressBar
-	ImageComponent *ImageComponent
+	Root        *tui.Grid
+	Videolist   *VideoList
+	Plabackinfo *PlaybackInfo
+	Volumemixer *VolumeMixer
+	Progressbar *ProgressBar
 }
 
 func Init() *Grid {
@@ -22,12 +21,10 @@ func Init() *Grid {
 	gd.Plabackinfo = InitPlaybackInfo("")
 	gd.Volumemixer = InitVolumeMixer()
 	gd.Progressbar = InitProgressBar()
-	gd.ImageComponent = InitImageComponent()
 	grid.SetRect(0, 0, termWidth, termHeight)
 	grid.Set(
 		tui.NewRow(1.6/2,
-			tui.NewCol(0.9/2, gd.Videolist.Root),
-			tui.NewCol(1.1/2, gd.ImageComponent.Root)), //COLOCAR OUTRA COISA AQUi
+			tui.NewCol(1.5/2, gd.Videolist.Root)),
 		tui.NewRow(0.2/2,
 			tui.NewCol(1.5/2, gd.Plabackinfo.Root),
 			tui.NewCol(0.5/2, gd.Volumemixer.Root)),

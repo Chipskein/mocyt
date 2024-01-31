@@ -73,5 +73,4 @@ func HandleSelectedVideo(t *TUI, videoname string) {
 	t.grid.Progressbar.Update(0, videoname, true)
 	t.tickerProgresBar = &time.NewTicker(15 * time.Second).C
 	go handlePlay(id)
-	t.UpdateScreen()
 }

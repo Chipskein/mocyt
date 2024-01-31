@@ -11,17 +11,7 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 	case tui.KeyboardEvent:
 		var char = e.ID
 		if char == "<Enter>" {
-			var videos = []string{
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
-				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n"}
+			var videos, _ = t.repository.ListVideos(t.searchTxt)
 			t.searchTxt = ""
 			t.grid.Videolist.Update(videos, "Press Enter to Play")
 			t.UpdateScreen()

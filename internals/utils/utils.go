@@ -14,6 +14,7 @@ func ParseListString(listString string) (id string, videoName string, channelNam
 	channelName = strings.Split(tmp[3], ":")[1]
 	return id, videoName, channelName, duration, nil
 }
+
 func ConvertPTISO8061(duration string) string {
 	//EXPECTED INPUT "PT4M13S"
 	duration = strings.Replace(duration, "PT", "", 1)

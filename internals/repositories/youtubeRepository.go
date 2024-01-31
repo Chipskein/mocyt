@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"chipskein/yta-cli/internals/utils"
 	"context"
 	"encoding/json"
 	"errors"
@@ -19,24 +20,21 @@ import (
 )
 
 type YoutubeRepository struct {
-	Service     *youtube.Service
-	VideosCache map[string]Video
+	Service *youtube.Service
 }
 
 type Video struct {
 	Id          string
 	Title       string
 	Duration    string
-	ChannelId   string
 	ChannelName string
-	URL         string
 }
 
-func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]Video, error) {
-	var videos []Video
+func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
+	var videos []string
 	service := ytr.Service
 	if service == nil {
-		return videos, errors.New("Nil pointer at services in ytr")
+		return videos, errors.New("nil pointer at services in ytr")
 	}
 	call := service.Search.List([]string{"snippet"}).Q(searchTxt).Type("video")
 	response, err := call.Do()
@@ -51,26 +49,21 @@ func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]Video, error) {
 			return videos, err
 		}
 		if len(response.Items) == 0 {
-			return videos, errors.New(fmt.Sprintf("Could not found any video with id:%s\n", id))
+			return videos, fmt.Errorf("could not found any video with id:%s", id)
 		}
 		var title = response.Items[0].Snippet.Title
-		var channelId = response.Items[0].Snippet.ChannelId
 		var channelName = response.Items[0].Snippet.ChannelTitle
-		var duration = response.Items[0].ContentDetails.Duration
-		var URL = fmt.Sprintf("https://www.youtube.com/watch?v=%s", id)
-		videos = append(videos, Video{
+		var duration = utils.ConvertPTISO8061(response.Items[0].ContentDetails.Duration)
+		var video = Video{
 			Id:          id,
 			Title:       title,
-			ChannelId:   channelId,
-			ChannelName: channelName,
 			Duration:    duration,
-			URL:         URL})
+			ChannelName: channelName}
+		videos = append(videos, fmt.Sprintf("%s\nID:%s\nDuration:%s\nChannel:%s\n", video.Title, video.Id, video.Duration, video.ChannelName))
 
 	}
 	return videos, nil
 }
-
-const missingClientSecretsMessage = `Please configure OAuth 2.0`
 
 // getClient uses a Context and Config to retrieve a Token
 // then generate a Client. It returns the generated Client.
@@ -164,6 +157,5 @@ func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, err
 
 	service, err := youtube.New(client)
 	result.Service = service
-	result.VideosCache = make(map[string]Video)
 	return result, nil
 }

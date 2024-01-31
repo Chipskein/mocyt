@@ -12,14 +12,14 @@ type PlaybackInfo struct {
 
 func (p *PlaybackInfo) Reset() {
 	if p.Root != nil {
-		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
+		p.Root.Text = fmt.Sprintf("Time:%s  Duration:%s", "0s", "0s")
 	}
 }
-func (p *PlaybackInfo) Update(timeSeconds int, duration string) {
+func (p *PlaybackInfo) Update(playBackTime string, duration string) {
 	if p.Root.Text != "" {
-		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", timeSeconds, duration)
+		p.Root.Text = fmt.Sprintf("Time:%s  Duration:%s", playBackTime, duration)
 	} else {
-		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
+		p.Root.Text = fmt.Sprintf("Time:%s  Duration:%s", "0s", "0s")
 	}
 }
 
@@ -28,7 +28,7 @@ func InitPlaybackInfo(text string) *PlaybackInfo {
 	if text != "" {
 		p.Text = text
 	} else {
-		p.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
+		p.Text = fmt.Sprintf("Time:%s  Duration:%s", "0s", "0s")
 	}
 	return &PlaybackInfo{Root: p}
 }

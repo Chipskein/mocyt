@@ -56,7 +56,7 @@ func CheckMpvMute() (bool, error) {
 	return b, nil
 }
 func CheckIfIsPlaying() (t bool, err error) {
-	tms, err := GetPlayBackTimeMicroSecond()
+	tms, err := GetPlayBackTimeSecond()
 	if err != nil {
 		return false, err
 	}
@@ -91,7 +91,7 @@ func SetSpeed(speed float64) error {
 	}
 	return nil
 }
-func GetPlayBackTimeMicroSecond() (float64, error) {
+func GetPlayBackTimeSecond() (float64, error) {
 	var cmd = `{ "command": ["get_property", "playback-time"]}` + "\n"
 	res, err := sendIPCCommand(cmd)
 	if err != nil {

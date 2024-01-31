@@ -63,13 +63,24 @@ func handleProgressBar(t *TUI) {
 	}
 	t.UpdateScreen()
 }
-
+func handleEachSecond(t *TUI) {
+	if mpv.CheckIfMpvIsRunning() {
+		isPlaying, _ := mpv.CheckIfIsPlaying()
+		if isPlaying {
+			seconds, _ := mpv.GetPlayBackTimeSecond()
+			time := utils.ConvertSecondsToString(int(seconds))
+			t.grid.Plabackinfo.Update(time, t.durationString)
+		}
+	}
+	t.UpdateScreen()
+}
 func HandleSelectedVideo(t *TUI, videoname string) {
 	id, videoname, _, duration, err := utils.ParseListString(videoname)
 	if err != nil {
 		return
 	}
-	t.grid.Plabackinfo.Update(0, duration)
+	t.durationString = duration
+	t.grid.Plabackinfo.Update("0s", duration)
 	t.grid.Progressbar.Update(0, videoname, true)
 	t.tickerProgresBar = &time.NewTicker(15 * time.Second).C
 	go handlePlay(id)

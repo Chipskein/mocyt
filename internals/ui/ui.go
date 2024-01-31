@@ -15,7 +15,9 @@ type TUI struct {
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
 	searchTxt             string
+	durationString        string //remove from here after
 	tickerProgresBar      *<-chan time.Time
+	tickerSecond          *<-chan time.Time
 }
 
 func (t *TUI) HandleTUIEvents() {
@@ -33,6 +35,8 @@ func (t *TUI) HandleTUIEvents() {
 
 		case <-*t.tickerProgresBar:
 			handleProgressBar(t)
+		case <-*t.tickerSecond:
+			handleEachSecond(t)
 		}
 
 	}
@@ -52,6 +56,8 @@ func StartUI(repository *repositories.YoutubeRepository) {
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()
 	t.tickerProgresBar = &time.NewTicker(time.Second).C
+	t.tickerSecond = &time.NewTicker(time.Second).C
+	t.durationString = "0s"
 	t.HandleTUIEvents()
 
 }

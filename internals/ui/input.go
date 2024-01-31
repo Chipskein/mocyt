@@ -80,7 +80,8 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 		handleVolumeDown(t)
 	case ".": //volume up
 		handleVolumeUp(t)
-	case "m": //mute
+	case "m":
+		handleMute(t)
 	case "<Resize>":
 		payload := e.Payload.(tui.Resize)
 		t.grid.Root.SetRect(0, 0, payload.Width, payload.Height)

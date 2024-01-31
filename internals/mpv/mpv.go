@@ -42,6 +42,19 @@ func CheckMpvPaused() (bool, error) {
 	var b bool = res.Data.(bool)
 	return b, nil
 }
+func CheckMpvMute() (bool, error) {
+	var cmd = `{ "command": ["get_property", "mute"]}` + "\n"
+	res, err := sendIPCCommand(cmd)
+	if err != nil {
+		return false, err
+	}
+	type_data := reflect.TypeOf(res.Data)
+	if type_data.Kind() != reflect.Bool {
+		return false, errors.New("error: The type of the data returned is not a boolean")
+	}
+	var b bool = res.Data.(bool)
+	return b, nil
+}
 func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
 	var res = &IpcJSONMVPResponse{}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
@@ -118,6 +131,14 @@ func Stop() error {
 }
 func Pause(pause bool) error {
 	var cmd = fmt.Sprintf(`{ "command": ["set_property", "pause", %t]}`+"\n", pause)
+	_, err := sendIPCCommand(cmd)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func Mute(mute bool) error {
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "mute", %t]}`+"\n", mute)
 	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err

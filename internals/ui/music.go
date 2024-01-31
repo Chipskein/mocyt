@@ -35,8 +35,14 @@ func handleVolumeUp(t *TUI) {
 		t.UpdateScreen()
 	}
 }
+func handleMute(t *TUI) {
+	if mpv.CheckIfMpvIsRunning() {
+		muted, _ := mpv.CheckMpvMute()
+		mpv.Mute(!muted)
+		t.UpdateScreen()
+	}
+}
 
-// func handleMute()   {}
 func handlePlay(videoID string) {
 	if mpv.CheckIfMpvIsRunning() {
 		mpv.Stop()

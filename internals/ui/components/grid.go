@@ -25,6 +25,7 @@ func Init() *Grid {
 	grid.Set(
 		tui.NewRow(1.6/2,
 			tui.NewCol(2/2, gd.Videolist.Root)),
+
 		tui.NewRow(0.2/2,
 			tui.NewCol(1.5/2, gd.Plabackinfo.Root),
 			tui.NewCol(0.5/2, gd.Volumemixer.Root)),

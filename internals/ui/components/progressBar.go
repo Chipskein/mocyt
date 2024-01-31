@@ -9,9 +9,14 @@ type ProgressBar struct {
 	Root *widgets.Gauge
 }
 
-func (p *ProgressBar) Update(percent int, videoName string) {
+func (p *ProgressBar) Update(percent int, videoName string, playing bool) {
 	p.Root.Percent = percent
 	p.Root.Label = videoName
+	if playing {
+		p.Root.Title = "|> Playing"
+	} else {
+		p.Root.Title = "|| Paused"
+	}
 }
 func (p *ProgressBar) Reset() {
 	p.Root.Percent = 0
@@ -20,6 +25,7 @@ func (p *ProgressBar) Reset() {
 
 func InitProgressBar() *ProgressBar {
 	progressBar := widgets.NewGauge()
+	progressBar.Title = "|> Welcome to mfytoc"
 	progressBar.TitleStyle.Fg = tui.ColorWhite
 	progressBar.Percent = 0
 	progressBar.Label = " "

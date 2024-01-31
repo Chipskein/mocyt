@@ -21,3 +21,19 @@ func TestParseListString(t *testing.T) {
 	}
 
 }
+func TestConvertPTISO8061(t *testing.T) {
+	duration := ConvertPTISO8061("PT4M13S")
+	if duration != "4m 13s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "4m 13s")
+	}
+}
+func TestConvertSecondsToString(t *testing.T) {
+	duration := ConvertSecondsToString(253)
+	if duration != "4m 13s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "4m 13s")
+	}
+	duration = ConvertSecondsToString(7240)
+	if duration != "2h 40s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "2h 40s")
+	}
+}

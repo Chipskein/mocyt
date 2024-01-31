@@ -3,6 +3,7 @@ package ui
 import (
 	"chipskein/yta-cli/internals/ui/components"
 	"log"
+	"time"
 
 	tui "github.com/gizak/termui/v3"
 )
@@ -12,6 +13,7 @@ type TUI struct {
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
 	searchTxt             string
+	tickerProgresBar      *<-chan time.Time
 }
 
 func (t *TUI) HandleTUIEvents() {
@@ -26,6 +28,9 @@ func (t *TUI) HandleTUIEvents() {
 			} else {
 				HandleSearchInputEvents(t, e)
 			}
+
+		case <-*t.tickerProgresBar:
+			handleProgressBar(t)
 		}
 
 	}
@@ -44,5 +49,7 @@ func StartUI() {
 	t.grid = components.Init()
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()
+	t.tickerProgresBar = &time.NewTicker(time.Second).C
 	t.HandleTUIEvents()
+
 }

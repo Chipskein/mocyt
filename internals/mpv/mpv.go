@@ -55,6 +55,13 @@ func CheckMpvMute() (bool, error) {
 	var b bool = res.Data.(bool)
 	return b, nil
 }
+func CheckIfIsPlaying() (t bool, err error) {
+	tms, err := GetPlayBackTimeMicroSecond()
+	if err != nil {
+		return false, err
+	}
+	return tms != 0, nil
+}
 func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
 	var res = &IpcJSONMVPResponse{}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
@@ -89,6 +96,9 @@ func GetPlayBackTimeMicroSecond() (float64, error) {
 	res, err := sendIPCCommand(cmd)
 	if err != nil {
 		return 0, err
+	}
+	if res.Data == nil {
+		return 0, nil
 	}
 	type_data := reflect.TypeOf(res.Data)
 	if type_data.Kind() != reflect.Float64 {

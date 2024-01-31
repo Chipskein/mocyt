@@ -36,7 +36,7 @@ func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
 	if service == nil {
 		return videos, errors.New("nil pointer at services in ytr")
 	}
-	call := service.Search.List([]string{"snippet"}).Q(searchTxt).Type("video")
+	call := service.Search.List([]string{"snippet"}).Q(searchTxt).Type("video").MaxResults(20)
 	response, err := call.Do()
 	if err != nil {
 		return videos, err
@@ -59,7 +59,8 @@ func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
 			Title:       title,
 			Duration:    duration,
 			ChannelName: channelName}
-		videos = append(videos, fmt.Sprintf("%s\nID:%s\nDuration:%s\nChannel:%s\n", video.Title, video.Id, video.Duration, video.ChannelName))
+		var liststring = fmt.Sprintf("[%s] [%s] %s", video.Id, video.Duration, video.Title)
+		videos = append(videos, liststring)
 
 	}
 	return videos, nil

@@ -75,10 +75,7 @@ func handleEachSecond(t *TUI) {
 	t.UpdateScreen()
 }
 func HandleSelectedVideo(t *TUI, videoname string) {
-	id, videoname, _, duration, err := utils.ParseListString(videoname)
-	if err != nil {
-		return
-	}
+	id, duration, videoname := utils.ParseListString(videoname)
 	t.durationString = duration
 	t.grid.Plabackinfo.Update("0s", duration)
 	t.grid.Progressbar.Update(0, videoname, true)

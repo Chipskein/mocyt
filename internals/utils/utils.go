@@ -5,14 +5,19 @@ import (
 	"strings"
 )
 
-func ParseListString(listString string) (id string, videoName string, channelName string, duration string, err error) {
-	//EXPECTED INPUT "Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration:4m 24s\nChannel:Teste\n"
-	tmp := strings.Split(listString, "\n")
-	videoName = tmp[0]
-	id = strings.Split(tmp[1], ":")[1]
-	duration = strings.Split(tmp[2], ":")[1]
-	channelName = strings.Split(tmp[3], ":")[1]
-	return id, videoName, channelName, duration, nil
+func ParseListString(liststring string) (id string, duration string, videoName string) {
+	//EXPECTED INPUT "[iPbeKLAu-eI] [4m 24s] Persona 5 OST 88 - The Whims of Fate"
+	var OpenSquareBracketIndex = 0
+	var CloseSquareBracketIndex = strings.Index(liststring, "]")
+	id = liststring[OpenSquareBracketIndex+1 : CloseSquareBracketIndex]
+	liststring = liststring[CloseSquareBracketIndex+2:]
+
+	OpenSquareBracketIndex = 0
+	CloseSquareBracketIndex = strings.Index(liststring, "]")
+	duration = liststring[OpenSquareBracketIndex+1 : CloseSquareBracketIndex]
+
+	videoName = liststring[CloseSquareBracketIndex+2:]
+	return id, duration, videoName
 }
 
 func ConvertPTISO8061(duration string) string {

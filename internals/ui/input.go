@@ -47,7 +47,6 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 	case "q", "<C-c>", "<Escape>":
 		return true
 	case "<Enter>":
-		//Play
 		var searchVideoInput = t.grid.Videolist.Root.Rows[t.grid.Videolist.Root.SelectedRow]
 		if searchVideoInput != "Press '/' to open searchBox and search for a video" {
 			HandleSelectedVideo(t, searchVideoInput)
@@ -66,9 +65,9 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 		t.grid.Videolist.Root.ScrollHalfPageUp()
 	case "<Space>":
 		handlePause(t)
-	case ",": //volume down
+	case ",":
 		handleVolumeDown(t)
-	case ".": //volume up
+	case ".":
 		handleVolumeUp(t)
 	case "m":
 		handleMute(t)

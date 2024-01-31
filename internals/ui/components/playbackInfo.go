@@ -6,22 +6,20 @@ import (
 	"github.com/gizak/termui/v3/widgets"
 )
 
-var defaultText = fmt.Sprintf("Time:%s  Duration:%s", "0s", "0s")
-
 type PlaybackInfo struct {
 	Root *widgets.Paragraph
 }
 
 func (p *PlaybackInfo) Reset() {
 	if p.Root != nil {
-		p.Root.Text = defaultText
+		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
 	}
 }
-func (p *PlaybackInfo) Update(text string) {
+func (p *PlaybackInfo) Update(timeSeconds int, duration string) {
 	if p.Root.Text != "" {
-		p.Root.Text = text
+		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", timeSeconds, duration)
 	} else {
-		p.Root.Text = defaultText
+		p.Root.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
 	}
 }
 
@@ -30,7 +28,7 @@ func InitPlaybackInfo(text string) *PlaybackInfo {
 	if text != "" {
 		p.Text = text
 	} else {
-		p.Text = defaultText
+		p.Text = fmt.Sprintf("Time:%ds  Duration:%s", 0, "0s")
 	}
 	return &PlaybackInfo{Root: p}
 }

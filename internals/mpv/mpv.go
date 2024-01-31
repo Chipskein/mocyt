@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"reflect"
 )
 
 // Conferir JSON IPC do mpv
@@ -15,10 +16,32 @@ import (
 const DEFAULT_MPV_SOCKET_PATH = "/tmp/mpv-socket"
 
 type IpcJSONMVPResponse struct {
-	Data  float32 `json:"data"`
-	Error string  `json:"error"`
+	Data  any    `json:"data"`
+	Error string `json:"error"`
 }
 
+func CheckIfMpvIsRunning() bool {
+	if _, err := os.Stat(DEFAULT_MPV_SOCKET_PATH); err == nil {
+		return true
+
+	} else if errors.Is(err, os.ErrNotExist) {
+		return false
+	}
+	return false
+}
+func CheckMpvPaused() (bool, error) {
+	var cmd = `{ "command": ["get_property", "pause"]}` + "\n"
+	res, err := sendIPCCommand(cmd)
+	if err != nil {
+		return false, err
+	}
+	type_data := reflect.TypeOf(res.Data)
+	if type_data.Kind() != reflect.Bool {
+		return false, errors.New("error: The type of the data returned is not a boolean")
+	}
+	var b bool = res.Data.(bool)
+	return b, nil
+}
 func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
 	var res = &IpcJSONMVPResponse{}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)
@@ -37,9 +60,9 @@ func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
 	return res, nil
 }
 
-func SetSpeed(speed float32) error {
+func SetSpeed(speed float64) error {
 	if speed < 0 || speed > 5 {
-		return errors.New("speed value is invalid Should be a Float32 between 0 and 5")
+		return errors.New("speed value is invalid Should be a float64 between 0 and 5")
 	}
 	var cmd = fmt.Sprintf(`{ "command": ["set_property", "speed", %f]}`+"\n", speed)
 	_, err := sendIPCCommand(cmd)
@@ -48,27 +71,37 @@ func SetSpeed(speed float32) error {
 	}
 	return nil
 }
-func GetPlayBackTimeMicroSecond() (int, error) {
+func GetPlayBackTimeMicroSecond() (float64, error) {
 	var cmd = `{ "command": ["get_property", "playback-time"]}` + "\n"
 	res, err := sendIPCCommand(cmd)
 	if err != nil {
 		return 0, err
 	}
-	return int(res.Data), nil
+	type_data := reflect.TypeOf(res.Data)
+	if type_data.Kind() != reflect.Float64 {
+		return 0, errors.New("error: The type of the data returned is not a float64")
+	}
+	var tms float64 = res.Data.(float64)
+	return tms, nil
 }
-func GetVolume() (float32, error) {
+func GetVolume() (float64, error) {
 	var cmd = `{ "command": ["get_property", "volume"]}` + "\n"
 	res, err := sendIPCCommand(cmd)
 	if err != nil {
 		return 0, err
 	}
-	return res.Data, err
+	type_data := reflect.TypeOf(res.Data)
+	if type_data.Kind() != reflect.Float64 {
+		return 0, errors.New("error: The type of the data returned is not a int")
+	}
+	var tms float64 = res.Data.(float64)
+	return tms, nil
 }
-func SetVolume(volume int) error {
+func SetVolume(volume float64) error {
 	if volume < 0 || volume > 100 {
 		return errors.New("volume is invalid Should be a int between 0 and 100")
 	}
-	var cmd = fmt.Sprintf(`{ "command": ["set_property", "volume", %d]}`+"\n", volume)
+	var cmd = fmt.Sprintf(`{ "command": ["set_property", "volume", %f]}`+"\n", volume)
 	_, err := sendIPCCommand(cmd)
 	if err != nil {
 		return err
@@ -100,14 +133,11 @@ func Play(startDownloadStreamCMD *exec.Cmd, stdin io.ReadCloser) error {
 	if err != nil {
 		return err
 	}
-	cmdArguments := []string{"-", fmt.Sprintf("-input-ipc-server=%s", DEFAULT_MPV_SOCKET_PATH)}
+	cmdArguments := []string{"-", fmt.Sprintf("-input-ipc-server=%s", DEFAULT_MPV_SOCKET_PATH), "--no-terminal"}
 	playFromStreamCMD := exec.Command(path, cmdArguments...)
 	playFromStreamCMD.Stdin = stdin
 	playFromStreamCMD.Stdout = devnull
-	playFromStreamCMD.Stderr = os.Stderr
-
-	fmt.Println(startDownloadStreamCMD.String())
-	fmt.Println(playFromStreamCMD.String())
+	playFromStreamCMD.Stderr = devnull
 
 	err = startDownloadStreamCMD.Start()
 	if err != nil {

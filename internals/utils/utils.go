@@ -4,11 +4,12 @@ import (
 	"strings"
 )
 
-func ExtractYoutubeIDFromListString(listString string) (id string, err error) {
-	//Expected Input [YOUTUBEID] VIDEONAME - CHANNEL NAME
-	tmp := strings.Split(listString, "]")
-	//[YOUTUBEID
-	tmp2 := tmp[0]
-	id = strings.Replace(tmp2, "[", "", 1)
-	return id, nil
+func ParseListString(listString string) (id string, videoName string, channelName string, duration string, err error) {
+	//EXPECTED INPUT "Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration:4m 24s\nChannel:Teste\n"
+	tmp := strings.Split(listString, "\n")
+	videoName = tmp[0]
+	id = strings.Split(tmp[1], ":")[1]
+	duration = strings.Split(tmp[2], ":")[1]
+	channelName = strings.Split(tmp[3], ":")[1]
+	return id, videoName, channelName, duration, nil
 }

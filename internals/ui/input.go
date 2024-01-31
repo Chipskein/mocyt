@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"chipskein/yta-cli/internals/utils"
 	"slices"
 
 	tui "github.com/gizak/termui/v3"
@@ -13,15 +12,16 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 		var char = e.ID
 		if char == "<Enter>" {
 			var videos = []string{
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST",
-				"[iPbeKLAu-eI] Persona 5 OST 88 - The Whims of Fate - Bfr's OST"}
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n",
+				"Persona 5 OST 88 - The Whims of Fate\nID:iPbeKLAu-eI\nDuration: 4m 24s\nChannel: Teste\n"}
 			t.searchTxt = ""
 			t.grid.Videolist.Update(videos, "Press Enter to Play")
 			t.UpdateScreen()
@@ -54,42 +54,38 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 	case "/":
 		t.shouldRenderSearchBar = true
 		t.grid.Videolist.Clean()
-		t.UpdateScreen()
 	case "q", "<C-c>", "<Escape>":
 		return true
 	case "<Enter>":
 		//Play
 		var searchVideoInput = t.grid.Videolist.Root.Rows[t.grid.Videolist.Root.SelectedRow]
-		utils.ExtractYoutubeIDFromListString(searchVideoInput)
-		//Play Search Text
-		t.UpdateScreen()
+		if searchVideoInput != "Press '/' to open searchBox and search for a video" {
+			HandleSelectedVideo(t, searchVideoInput)
+		}
 	case "<Down>", "j":
 		t.grid.Videolist.Root.ScrollDown()
-		t.UpdateScreen()
 	case "<Up>", "k":
 		t.grid.Videolist.Root.ScrollUp()
-		t.UpdateScreen()
 	case "<End>":
 		t.grid.Videolist.Root.ScrollBottom()
-		t.UpdateScreen()
 	case "<Home>":
 		t.grid.Videolist.Root.ScrollTop()
-		t.UpdateScreen()
 	case "<PageDown>":
 		t.grid.Videolist.Root.ScrollHalfPageDown()
-		t.UpdateScreen()
 	case "<PageUp>":
 		t.grid.Videolist.Root.ScrollHalfPageUp()
-		t.UpdateScreen()
-	case "<Space>": //pause
-	case ",": //volume up
-	case ".": //volume down
+	case "<Space>":
+		handlePause(t)
+	case ",": //volume down
+		handleVolumeDown(t)
+	case ".": //volume up
+		handleVolumeUp(t)
 	case "m": //mute
 	case "<Resize>":
 		payload := e.Payload.(tui.Resize)
 		t.grid.Root.SetRect(0, 0, payload.Width, payload.Height)
 		tui.Clear()
-		t.UpdateScreen()
 	}
+	t.UpdateScreen()
 	return false
 }

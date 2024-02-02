@@ -1,0 +1,13 @@
+syntax = "proto3";
+package main;
+option go_package = "./";
+message  PlayerInformation{
+    string  listString = 1;
+    int32 playbackTime =2;
+    int32 duration = 3;
+    int32 percentProgresBar =4;
+    int32 volume =5;
+    bool paused =6;
+    bool playing =7;
+    string pidMPV=8;
+}

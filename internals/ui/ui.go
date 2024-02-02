@@ -53,6 +53,7 @@ func StartUI(repository *repositories.YoutubeRepository) {
 	defer tui.Close()
 	var t = &TUI{repository: repository}
 	t.grid = components.Init()
+	//check cached info
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()
 	t.tickerProgresBar = &time.NewTicker(time.Second).C

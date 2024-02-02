@@ -6,6 +6,7 @@ require (
 	github.com/gizak/termui/v3 v3.1.0
 	golang.org/x/oauth2 v0.16.0
 	google.golang.org/api v0.159.0
+	google.golang.org/protobuf v1.32.0
 )
 
 require (
@@ -35,5 +36,4 @@ require (
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240125205218-1f4bbc51befe // indirect
 	google.golang.org/grpc v1.61.0 // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
 )

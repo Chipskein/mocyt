@@ -1,4 +1,4 @@
-package protobuf
+package cache_handler
 
 import (
 	"log"
@@ -9,11 +9,11 @@ import (
 
 const cache_file_name = "/tmp/cache-ytacli"
 
-func WriteInfo(liststring string, playbackTime int, duration int, percentProgressBar int, volume int, paused bool, playing bool, PID string) {
+func WriteInfo(liststring string, playbackTime string, duration string, percentProgressBar int, volume int, paused bool, playing bool, PID string) {
 	teste := &PlayerInformation{
 		ListString:        liststring,
-		PlaybackTime:      int32(playbackTime),
-		Duration:          int32(duration),
+		PlaybackTime:      playbackTime,
+		Duration:          duration,
 		PercentProgresBar: int32(percentProgressBar),
 		Volume:            int32(volume),
 		Paused:            paused,
@@ -43,4 +43,10 @@ func ReadInfo() *PlayerInformation {
 		log.Fatalln("Failed to parse PlayerInformation:", err)
 	}
 	return info
+}
+func CheckIfCacheFileExists() bool {
+	if _, err := os.Stat(cache_file_name); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }

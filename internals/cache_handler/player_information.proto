@@ -3,8 +3,8 @@ package main;
 option go_package = "./";
 message  PlayerInformation{
     string  listString = 1;
-    int32 playbackTime =2;
-    int32 duration = 3;
+    string playbackTime =2;
+    string duration = 3;
     int32 percentProgresBar =4;
     int32 volume =5;
     bool paused =6;

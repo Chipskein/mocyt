@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"chipskein/yta-cli/internals/cache_handler"
 	"chipskein/yta-cli/internals/repositories"
 	"chipskein/yta-cli/internals/ui/components"
 	"log"
@@ -15,6 +16,7 @@ type TUI struct {
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
 	searchTxt             string
+	current_player_info   *cache_handler.PlayerInformation
 	durationString        string //remove from here after
 	tickerProgresBar      *<-chan time.Time
 	tickerSecond          *<-chan time.Time
@@ -52,8 +54,23 @@ func StartUI(repository *repositories.YoutubeRepository) {
 	}
 	defer tui.Close()
 	var t = &TUI{repository: repository}
-	t.grid = components.Init()
 	//check cached info
+	cache := cache_handler.CheckIfCacheFileExists()
+	if cache {
+		cached_info := cache_handler.ReadInfo()
+		t.current_player_info = cached_info
+	} else {
+		t.current_player_info = &cache_handler.PlayerInformation{
+			ListString:        "",
+			PlaybackTime:      "0s",
+			Duration:          "0s",
+			PercentProgresBar: 0,
+			Volume:            0,
+			Paused:            false,
+			Playing:           false,
+			PidMPV:            ""}
+	}
+	t.grid = components.Init()
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()
 	t.tickerProgresBar = &time.NewTicker(time.Second).C

@@ -32,3 +32,14 @@ func TestConvertSecondsToString(t *testing.T) {
 		t.Fatalf("Duration %s is not equal to %s\n", duration, "2h 40s")
 	}
 }
+
+func TestConvertStringToSeconds(t *testing.T) {
+	duration := ConvertStringToSeconds("4m 13s")
+	if duration != 253 {
+		t.Fatalf("Duration %d is not equal to %s\n", duration, "4m 13s")
+	}
+	duration = ConvertStringToSeconds("2h 40s")
+	if duration != 7240 {
+		t.Fatalf("Duration %d is not equal to %s\n", duration, "2h 40s")
+	}
+}

@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"chipskein/yta-cli/internals/cache_handler"
 	"chipskein/yta-cli/internals/mpv"
 	"chipskein/yta-cli/internals/utils"
 	"chipskein/yta-cli/internals/ytdlp"
@@ -13,6 +14,9 @@ func handlePause(t *TUI) {
 		paused, _ := mpv.CheckMpvPaused()
 		mpv.Pause(!paused)
 		t.grid.Progressbar.Update(t.grid.Progressbar.Root.Percent, t.grid.Progressbar.Root.Label, paused)
+		//is confuse but works
+		//t.Current_player_info.Paused = !paused
+		t.Current_player_info.Playing = paused
 	}
 }
 
@@ -21,6 +25,7 @@ func handleVolumeDown(t *TUI) {
 		current_volume, _ := mpv.GetVolume()
 		if current_volume > 0 {
 			mpv.SetVolume(current_volume - 1)
+			t.Current_player_info.Volume = int32(current_volume - 1)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume - 1))
 		}
 	}
@@ -31,6 +36,7 @@ func handleVolumeUp(t *TUI) {
 		current_volume, _ := mpv.GetVolume()
 		if current_volume < 100 {
 			mpv.SetVolume(current_volume + 1)
+			t.Current_player_info.Volume = int32(current_volume + 1)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume + 1))
 		}
 	}
@@ -58,6 +64,7 @@ func handleProgressBar(t *TUI) {
 		if isPlaying {
 			if t.grid.Progressbar.Root.Percent < 100 {
 				t.grid.Progressbar.Root.Percent++
+				t.Current_player_info.PercentProgresBar = int32(t.grid.Progressbar.Root.Percent)
 			}
 		}
 	}
@@ -69,16 +76,29 @@ func handleEachSecond(t *TUI) {
 		if isPlaying {
 			seconds, _ := mpv.GetPlayBackTimeSecond()
 			time := utils.ConvertSecondsToString(int(seconds))
-			t.grid.Plabackinfo.Update(time, t.durationString)
+			t.Current_player_info.PlaybackTime = time
+			t.grid.Plabackinfo.Update(time, t.Current_player_info.Duration)
 		}
 	}
 	t.UpdateScreen()
 }
+func handleEach10Second(t *TUI) {
+	cache_handler.WriteInfo(t.Current_player_info)
+}
 func HandleSelectedVideo(t *TUI, videoname string) {
 	id, duration, videoname := utils.ParseListString(videoname)
-	t.durationString = duration
-	t.grid.Plabackinfo.Update("0s", duration)
-	t.grid.Progressbar.Update(0, videoname, true)
-	t.tickerProgresBar = &time.NewTicker(15 * time.Second).C
+	t.Current_player_info.ListString = videoname
+	t.Current_player_info.Duration = duration
+	t.Current_player_info.PlaybackTime = "0s"
+	t.Current_player_info.PercentProgresBar = 0
+	t.Current_player_info.Playing = true
+	t.Current_player_info.Paused = false
+	t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, duration)
+	t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), videoname, t.Current_player_info.Playing)
+	duration_seconds := utils.ConvertStringToSeconds(duration)
+	t.tickerProgresBar = &time.NewTicker(time.Second * time.Duration(duration_seconds)).C
 	go handlePlay(id)
+	//gambers
+	time.Sleep(1 * time.Second)
+	mpv.SetVolume(float64(t.Current_player_info.Volume))
 }

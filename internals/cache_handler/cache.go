@@ -9,17 +9,8 @@ import (
 
 const cache_file_name = "/tmp/cache-ytacli"
 
-func WriteInfo(liststring string, playbackTime string, duration string, percentProgressBar int, volume int, paused bool, playing bool, PID string) {
-	teste := &PlayerInformation{
-		ListString:        liststring,
-		PlaybackTime:      playbackTime,
-		Duration:          duration,
-		PercentProgresBar: int32(percentProgressBar),
-		Volume:            int32(volume),
-		Paused:            paused,
-		Playing:           playing,
-		PidMPV:            PID}
-	out, err := proto.Marshal(teste)
+func WriteInfo(pf *PlayerInformation) {
+	out, err := proto.Marshal(pf)
 	if err != nil {
 		log.Fatalln("Failed to encode PlayerInformation:", err)
 	}
@@ -34,7 +25,7 @@ func WriteInfo(liststring string, playbackTime string, duration string, percentP
 }
 func ReadInfo() *PlayerInformation {
 	// Read the existing address book.
-	in, err := os.ReadFile("testando")
+	in, err := os.ReadFile(cache_file_name)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}

@@ -43,3 +43,24 @@ func ConvertSecondsToString(seconds int) string {
 	output += fmt.Sprintf("%ds", seconds)
 	return output
 }
+func ConvertStringToSeconds(duration string) int {
+	//EXPECTED INPUT "4m 13s"
+	var seconds int = 0
+	tmp_slice := strings.Split(duration, " ")
+	for _, t := range tmp_slice {
+		if strings.Contains(t, "h") {
+			var h int
+			fmt.Sscanf(t, "%dh", &h)
+			seconds += h * 3600
+		} else if strings.Contains(t, "m") {
+			var m int
+			fmt.Sscanf(t, "%dm", &m)
+			seconds += m * 60
+		} else if strings.Contains(t, "s") {
+			var s int
+			fmt.Sscanf(t, "%ds", &s)
+			seconds += s
+		}
+	}
+	return seconds
+}

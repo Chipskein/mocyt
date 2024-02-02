@@ -16,10 +16,10 @@ type TUI struct {
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
 	searchTxt             string
-	current_player_info   *cache_handler.PlayerInformation
-	durationString        string //remove from here after
+	Current_player_info   *cache_handler.PlayerInformation
 	tickerProgresBar      *<-chan time.Time
 	tickerSecond          *<-chan time.Time
+	ticker10Second        *<-chan time.Time
 }
 
 func (t *TUI) HandleTUIEvents() {
@@ -39,6 +39,8 @@ func (t *TUI) HandleTUIEvents() {
 			handleProgressBar(t)
 		case <-*t.tickerSecond:
 			handleEachSecond(t)
+		case <-*t.ticker10Second:
+			handleEach10Second(t)
 		}
 
 	}
@@ -54,28 +56,31 @@ func StartUI(repository *repositories.YoutubeRepository) {
 	}
 	defer tui.Close()
 	var t = &TUI{repository: repository}
+	t.grid = components.Init()
 	//check cached info
 	cache := cache_handler.CheckIfCacheFileExists()
 	if cache {
 		cached_info := cache_handler.ReadInfo()
-		t.current_player_info = cached_info
+		t.Current_player_info = cached_info
+		t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, t.Current_player_info.Duration)
+		t.grid.Volumemixer.UpdatePercent(int(t.Current_player_info.Volume))
+		t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), t.Current_player_info.ListString, t.Current_player_info.Playing)
 	} else {
-		t.current_player_info = &cache_handler.PlayerInformation{
+		t.Current_player_info = &cache_handler.PlayerInformation{
 			ListString:        "",
 			PlaybackTime:      "0s",
 			Duration:          "0s",
 			PercentProgresBar: 0,
-			Volume:            0,
+			Volume:            100,
 			Paused:            false,
 			Playing:           false,
 			PidMPV:            ""}
 	}
-	t.grid = components.Init()
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()
 	t.tickerProgresBar = &time.NewTicker(time.Second).C
 	t.tickerSecond = &time.NewTicker(time.Second).C
-	t.durationString = "0s"
+	t.ticker10Second = &time.NewTicker(10 * time.Second).C
 	t.HandleTUIEvents()
 
 }

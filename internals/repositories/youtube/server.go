@@ -36,7 +36,7 @@ func InitServer(token_json_path string) {
 		Handler: http.DefaultServeMux,
 	}
 	log.Println("Iniciando Servidor na porta 5000")
-	log.Fatal(server.ListenAndServe())
+	server.ListenAndServe()
 }
 
 func KillServer() {

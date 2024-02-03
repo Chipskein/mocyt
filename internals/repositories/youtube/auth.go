@@ -65,6 +65,8 @@ func Login(ctx context.Context, credentials_path string, token_json_path string)
 	if err != nil {
 		return err
 	}
+	//fuck google console
+	config.RedirectURL = "http://localhost:5000"
 	CONFIG = config
 	go GenAuthLink()
 	time.Sleep(1 * time.Second)

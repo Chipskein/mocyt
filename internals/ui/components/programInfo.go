@@ -10,6 +10,6 @@ type ProgramInfo struct {
 
 func InitProgramInfo() *ProgramInfo {
 	p := widgets.NewParagraph()
-	p.Text = "Basic usage:\n*Play:<Enter>\n*VolumeUp:<.>\n*VolumeDown:<,>\n*Mute:<m>\n*Open Search:</>\n*Search:<Enter>\n*Exit Search:<q>|<Esc>\n*Exit:<q>|<Esc>\n*Clear Search:<Del>\n"
+	p.Text = "Basic usage:\n*Play:<Enter>\n*VolumeUp:<.>\n*VolumeDown:<,>\n*Mute:<m>\n*Open Search:</>\n*Search:<Enter>\n*Exit Search:<q>|<Esc>\n*Exit:<q>|<Esc>\n*Clear Search:<Del>\n*Move:<↑,↓>\n"
 	return &ProgramInfo{Root: p}
 }

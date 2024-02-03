@@ -1,6 +1,4 @@
 # TODO
-  * Fazer Comando de Login
-  * Fazer Comando de LogOff
   * Arrumar Bugs
   * Arrumar Progress bar funcionar em função da duração da música que está tocando []
   * Testar Funções com cache

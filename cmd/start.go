@@ -4,6 +4,7 @@ import (
 	"chipskein/yta-cli/internals/repositories/youtube"
 	"chipskein/yta-cli/internals/ui"
 	"context"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -18,6 +19,7 @@ var StartCmd = &cobra.Command{
 		if err != nil {
 			panic(err)
 		}
+		time.Sleep(5 * time.Second)
 		ui.StartUI(repo)
 	},
 }

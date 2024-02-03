@@ -10,6 +10,7 @@ type Grid struct {
 	Plabackinfo *PlaybackInfo
 	Volumemixer *VolumeMixer
 	Progressbar *ProgressBar
+	ProgramInfo *ProgramInfo
 }
 
 func Init() *Grid {
@@ -21,14 +22,16 @@ func Init() *Grid {
 	gd.Plabackinfo = InitPlaybackInfo("")
 	gd.Volumemixer = InitVolumeMixer()
 	gd.Progressbar = InitProgressBar()
+	gd.ProgramInfo = InitProgramInfo()
 	grid.SetRect(0, 0, termWidth, termHeight)
 	grid.Set(
-		tui.NewRow(1.6/2,
-			tui.NewCol(1, gd.Videolist.Root)),
-		tui.NewRow(0.2/2,
+		tui.NewRow(1.5/2,
+			tui.NewCol(1.5/2, gd.Videolist.Root), tui.NewCol(0.5/2, gd.ProgramInfo.Root)),
+
+		tui.NewRow(0.25/2,
 			tui.NewCol(1.5/2, gd.Plabackinfo.Root),
 			tui.NewCol(0.5/2, gd.Volumemixer.Root)),
-		tui.NewRow(0.18/2, gd.Progressbar.Root),
+		tui.NewRow(0.25/2, gd.Progressbar.Root),
 	)
 	return gd
 }

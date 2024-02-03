@@ -16,7 +16,7 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 			t.Current_player_info.SearchResults = videos
 			videos = []string{t.Current_player_info.SearchTxt}
 			videos = append(videos, t.Current_player_info.SearchResults...)
-			t.grid.Videolist.Update(videos, "Press Enter to Play")
+			t.grid.Videolist.Update(videos, "Welcome!")
 			t.UpdateScreen()
 			t.shouldRenderSearchBar = false
 			break
@@ -27,7 +27,7 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 		if char == "<Delete>" {
 			t.Current_player_info.SearchTxt = ""
 			t.grid.Videolist.Root.Rows[0] = t.Current_player_info.SearchTxt
-			t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Press Enter to Search")
+			t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Welcome!")
 			t.UpdateScreen()
 		}
 		if char == "<Escape>" || char == "q" {
@@ -48,7 +48,7 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 			}
 		}
 		t.grid.Videolist.Root.Rows[0] = t.Current_player_info.SearchTxt
-		t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Press Enter to Search")
+		t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Welcome!")
 		t.UpdateScreen()
 	}
 }
@@ -65,6 +65,9 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 		var searchVideoInput = t.grid.Videolist.Root.Rows[t.grid.Videolist.Root.SelectedRow]
 		if t.grid.Videolist.Root.SelectedRow > 0 {
 			HandleSelectedVideo(t, searchVideoInput)
+		} else {
+			t.grid.Videolist.Root.SelectedRow = 0
+			t.shouldRenderSearchBar = true
 		}
 	case "<Down>", "j":
 		t.grid.Videolist.Root.ScrollDown()

@@ -14,6 +14,7 @@ func main() {
 		Short: "Music from YT on console",
 		Long:  `Simple terminal music player that streams audio from yt`,
 	}
+	rootCMD.AddCommand(cmd.LoginCmd)
 	rootCMD.AddCommand(cmd.StartCmd)
 	rootCMD.AddCommand(cmd.KillCmd)
 	if err := rootCMD.Execute(); err != nil {

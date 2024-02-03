@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"log"
 	"slices"
 
 	tui "github.com/gizak/termui/v3"
@@ -11,7 +12,11 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 	case tui.KeyboardEvent:
 		var char = e.ID
 		if char == "<Enter>" {
-			var videos, _ = t.repository.ListVideos(t.searchTxt)
+			var videos, err = t.repository.ListVideos(t.searchTxt)
+			if err != nil {
+				log.Println(err)
+				panic(err)
+			}
 			t.searchTxt = ""
 			t.grid.Videolist.Update(videos, "Press Enter to Play")
 			t.UpdateScreen()

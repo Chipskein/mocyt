@@ -2,7 +2,7 @@ package ui
 
 import (
 	"chipskein/yta-cli/internals/cache_handler"
-	"chipskein/yta-cli/internals/repositories"
+	"chipskein/yta-cli/internals/repositories/youtube"
 	"chipskein/yta-cli/internals/ui/components"
 	"log"
 	"time"
@@ -11,7 +11,7 @@ import (
 )
 
 type TUI struct {
-	repository            *repositories.YoutubeRepository
+	repository            *youtube.YoutubeRepository
 	shouldRenderSearchBar bool
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
@@ -50,7 +50,7 @@ func (t *TUI) UpdateScreen() {
 	tui.Render(t.grid.Root)
 }
 
-func StartUI(repository *repositories.YoutubeRepository) {
+func StartUI(repository *youtube.YoutubeRepository) {
 	if err := tui.Init(); err != nil {
 		log.Fatalf("failed to initialize termui: %v", err)
 	}

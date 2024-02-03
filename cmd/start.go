@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"chipskein/yta-cli/internals/repositories"
+	"chipskein/yta-cli/internals/repositories/youtube"
 	"chipskein/yta-cli/internals/ui"
 	"context"
 
@@ -14,7 +14,7 @@ var StartCmd = &cobra.Command{
 	Long:  `Simple terminal music player that streams audio from yt`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
-		repo, err := repositories.Init(ctx, "client_secret.json")
+		repo, err := youtube.Init(ctx, "client_secret.json")
 		if err != nil {
 			panic(err)
 		}

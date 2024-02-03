@@ -83,36 +83,30 @@ func Login(ctx context.Context, credentials_path string) (err error) {
 	}
 }
 func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, error) {
-	var result = &YoutubeRepository{}
 	b, err := os.ReadFile(credentials_path)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
 	_, err = os.Stat("token.json")
 	if os.IsNotExist(err) {
 		fmt.Println("Token file does not exist, please use login command do generate one")
 		os.Exit(0)
-	} else {
-		log.Println(err)
-		return result, err
+	} else if err != nil {
+		return nil, err
 	}
 
 	config, err := google.ConfigFromJSON(b, youtube.YoutubeReadonlyScope)
 	if err != nil {
-		log.Println("log witf", err)
-		return result, err
+		return nil, err
 	}
 	token, err := tokenFromFile("token.json")
 	if err != nil {
-		log.Println("log", err)
-		return result, err
+		return nil, err
 	}
 	client := config.Client(ctx, token)
 	service, err := youtube.New(client)
 	if err != nil {
-		log.Println("wtf", err)
-		return result, err
+		return nil, err
 	}
-	result.Service = service
-	return result, nil
+	return &YoutubeRepository{Service: service}, nil
 }

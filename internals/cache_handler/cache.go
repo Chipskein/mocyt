@@ -7,14 +7,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const cache_file_name = "/tmp/cache-ytacli"
+const Cache_file_name = "/tmp/cache-ytacli"
 
 func WriteInfo(pf *PlayerInformation) {
 	out, err := proto.Marshal(pf)
 	if err != nil {
 		log.Fatalln("Failed to encode PlayerInformation:", err)
 	}
-	file, err := os.OpenFile(cache_file_name, os.O_CREATE|os.O_RDWR, 0660)
+	file, err := os.OpenFile(Cache_file_name, os.O_CREATE|os.O_RDWR, 0660)
 	if err != nil {
 		log.Fatalln("Failed to write PlayerInformation:", err)
 	}
@@ -25,7 +25,7 @@ func WriteInfo(pf *PlayerInformation) {
 }
 func ReadInfo() *PlayerInformation {
 	// Read the existing address book.
-	in, err := os.ReadFile(cache_file_name)
+	in, err := os.ReadFile(Cache_file_name)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}
@@ -36,7 +36,7 @@ func ReadInfo() *PlayerInformation {
 	return info
 }
 func CheckIfCacheFileExists() bool {
-	if _, err := os.Stat(cache_file_name); os.IsNotExist(err) {
+	if _, err := os.Stat(Cache_file_name); os.IsNotExist(err) {
 		return false
 	}
 	return true

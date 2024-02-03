@@ -1,16 +1,23 @@
 package main
 
 import (
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/ui"
-	"context"
+	"chipskein/yta-cli/cmd"
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
 )
 
 func main() {
-	ctx := context.Background()
-	repo, err := repositories.Init(ctx, "client_secret.json")
-	if err != nil {
-		panic(err)
+	rootCMD := cobra.Command{
+		Use:   "mfytoc",
+		Short: "Music from YT on console",
+		Long:  `Simple terminal music player that streams audio from yt`,
 	}
-	ui.StartUI(repo)
+	rootCMD.AddCommand(cmd.StartCmd)
+	rootCMD.AddCommand(cmd.KillCmd)
+	if err := rootCMD.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

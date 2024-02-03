@@ -62,7 +62,9 @@ func StartUI(repository *youtube.YoutubeRepository) {
 		t.grid.Videolist.Update(videos, "Welcome!")
 		t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, t.Current_player_info.Duration)
 		t.grid.Volumemixer.UpdatePercent(int(t.Current_player_info.Volume))
-		t.grid.Volumemixer.SetMute(t.Current_player_info.Muted)
+		if t.Current_player_info.Muted {
+			t.grid.Volumemixer.SetMute(t.Current_player_info.Muted)
+		}
 		t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), t.Current_player_info.ListString, t.Current_player_info.Playing)
 	} else {
 		t.Current_player_info = &cache_handler.PlayerInformation{

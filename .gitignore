@@ -1,3 +1,5 @@
 --Frag*
 client_secret.json
 token.json
+bin/*
+!/bin/.gitkeep

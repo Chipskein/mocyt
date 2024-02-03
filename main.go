@@ -10,7 +10,7 @@ import (
 
 func main() {
 	rootCMD := cobra.Command{
-		Use:   "mfytoc",
+		Use:   "mocyt",
 		Short: "Music from YT on console",
 		Long:  `Simple terminal music player that streams audio from yt`,
 	}

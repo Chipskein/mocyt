@@ -20,7 +20,7 @@ type Video struct {
 }
 
 func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
-	var videos []string
+	var videos = []string{}
 	service := ytr.Service
 	if service == nil {
 		return videos, errors.New("nil pointer at services in ytr")

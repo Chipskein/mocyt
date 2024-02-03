@@ -15,7 +15,6 @@ type TUI struct {
 	shouldRenderSearchBar bool
 	grid                  *components.Grid
 	uiEvents              <-chan tui.Event
-	searchTxt             string
 	Current_player_info   *cache_handler.PlayerInformation
 	tickerProgresBar      *<-chan time.Time
 	tickerSecond          *<-chan time.Time
@@ -54,13 +53,16 @@ func StartUI(repository *youtube.YoutubeRepository) {
 	defer tui.Close()
 	var t = &TUI{repository: repository}
 	t.grid = components.Init()
-	//check cached info
 	cache := cache_handler.CheckIfCacheFileExists()
 	if cache {
 		cached_info := cache_handler.ReadInfo()
 		t.Current_player_info = cached_info
+		videos := []string{t.Current_player_info.SearchTxt}
+		videos = append(videos, t.Current_player_info.SearchResults...)
+		t.grid.Videolist.Update(videos, "Welcome!")
 		t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, t.Current_player_info.Duration)
 		t.grid.Volumemixer.UpdatePercent(int(t.Current_player_info.Volume))
+		t.grid.Volumemixer.SetMute(t.Current_player_info.Muted)
 		t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), t.Current_player_info.ListString, t.Current_player_info.Playing)
 	} else {
 		t.Current_player_info = &cache_handler.PlayerInformation{
@@ -71,7 +73,10 @@ func StartUI(repository *youtube.YoutubeRepository) {
 			Volume:            100,
 			Paused:            false,
 			Playing:           false,
-			PidMPV:            ""}
+			SearchTxt:         "",
+			Muted:             false,
+			SearchResults:     []string{},
+		}
 	}
 	t.UpdateScreen()
 	t.uiEvents = tui.PollEvents()

@@ -14,10 +14,8 @@ func handlePause(t *TUI) {
 		paused, _ := mpv.CheckMpvPaused()
 		mpv.Pause(!paused)
 		t.grid.Progressbar.Update(t.grid.Progressbar.Root.Percent, t.grid.Progressbar.Root.Label, paused)
-		//check this what a brain fuck
 		t.Current_player_info.Paused = !paused
 		t.Current_player_info.Playing = paused
-		//cache_handler.WriteInfo(t.Current_player_info)
 	}
 }
 
@@ -27,7 +25,6 @@ func handleVolumeDown(t *TUI) {
 		if current_volume > 0 {
 			mpv.SetVolume(current_volume - 1)
 			t.Current_player_info.Volume = int32(current_volume - 1)
-			//cache_handler.WriteInfo(t.Current_player_info)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume - 1))
 		}
 	}
@@ -39,7 +36,6 @@ func handleVolumeUp(t *TUI) {
 		if current_volume < 100 {
 			mpv.SetVolume(current_volume + 1)
 			t.Current_player_info.Volume = int32(current_volume + 1)
-			//cache_handler.WriteInfo(t.Current_player_info)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume + 1))
 		}
 	}
@@ -49,6 +45,7 @@ func handleMute(t *TUI) {
 		muted, _ := mpv.CheckMpvMute()
 		mpv.Mute(!muted)
 		t.grid.Volumemixer.SetMute(!muted)
+		t.Current_player_info.Muted = !muted
 	}
 }
 
@@ -99,7 +96,6 @@ func HandleSelectedVideo(t *TUI, videoname string) {
 	t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, duration)
 	t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), videoname, t.Current_player_info.Playing)
 	go handlePlay(id)
-	//gambers
 	time.Sleep(1 * time.Second)
 	mpv.SetVolume(float64(t.Current_player_info.Volume))
 }

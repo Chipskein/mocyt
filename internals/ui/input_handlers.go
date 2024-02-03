@@ -12,8 +12,10 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 	case tui.KeyboardEvent:
 		var char = e.ID
 		if char == "<Enter>" {
-			var videos, _ = t.repository.ListVideos(t.searchTxt)
-			t.searchTxt = ""
+			var videos, _ = t.repository.ListVideos(t.Current_player_info.SearchTxt)
+			t.Current_player_info.SearchResults = videos
+			videos = []string{t.Current_player_info.SearchTxt}
+			videos = append(videos, t.Current_player_info.SearchResults...)
 			t.grid.Videolist.Update(videos, "Press Enter to Play")
 			t.UpdateScreen()
 			t.shouldRenderSearchBar = false
@@ -22,20 +24,31 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 		if char == "<Space>" {
 			char = " "
 		}
+		if char == "<Delete>" {
+			t.Current_player_info.SearchTxt = ""
+			t.grid.Videolist.Root.Rows[0] = t.Current_player_info.SearchTxt
+			t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Press Enter to Search")
+			t.UpdateScreen()
+		}
+		if char == "<Escape>" || char == "q" {
+			t.shouldRenderSearchBar = false
+			break
+		}
+
 		if char != "<Backspace>" {
 			var invalidChars = []string{"<Up>", "<Down>", "<Left>", "<Right>", "<Insert>", "<Delete>", "<Home>", "<End>", "<Previous>", "<Next>", "<Tab>"}
 			isInvalid := slices.Contains(invalidChars, char)
 			if isInvalid {
 				break
 			}
-			t.searchTxt += char
+			t.Current_player_info.SearchTxt += char
 		} else {
-			if len(t.searchTxt) > 0 {
-				t.searchTxt = t.searchTxt[:len(t.searchTxt)-1]
+			if len(t.Current_player_info.SearchTxt) > 0 {
+				t.Current_player_info.SearchTxt = t.Current_player_info.SearchTxt[:len(t.Current_player_info.SearchTxt)-1]
 			}
 		}
-
-		t.grid.Videolist.Update([]string{t.searchTxt}, "Press Enter to Search")
+		t.grid.Videolist.Root.Rows[0] = t.Current_player_info.SearchTxt
+		t.grid.Videolist.Update(t.grid.Videolist.Root.Rows, "Press Enter to Search")
 		t.UpdateScreen()
 	}
 }
@@ -43,14 +56,14 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 	switch e.ID {
 	case "/":
+		t.grid.Videolist.Root.SelectedRow = 0
 		t.shouldRenderSearchBar = true
-		t.grid.Videolist.Clean()
 	case "q", "<C-c>", "<Escape>":
 		cache_handler.WriteInfo(t.Current_player_info)
 		return true
 	case "<Enter>":
 		var searchVideoInput = t.grid.Videolist.Root.Rows[t.grid.Videolist.Root.SelectedRow]
-		if searchVideoInput != "Press '/' to open searchBox and search for a video" {
+		if t.grid.Videolist.Root.SelectedRow > 0 {
 			HandleSelectedVideo(t, searchVideoInput)
 		}
 	case "<Down>", "j":

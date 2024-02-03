@@ -1,6 +1,6 @@
 syntax = "proto3";
-package main;
-option go_package = "./";
+package cache_handler;
+option go_package = ".";
 message  PlayerInformation{
     string  listString = 1;
     string playbackTime =2;
@@ -9,5 +9,7 @@ message  PlayerInformation{
     int32 volume =5;
     bool paused =6;
     bool playing =7;
-    string pidMPV=8;
+    string searchTxt =8;
+    bool muted = 9;
+    repeated string searchResults=10;
 }

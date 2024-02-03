@@ -14,9 +14,10 @@ func handlePause(t *TUI) {
 		paused, _ := mpv.CheckMpvPaused()
 		mpv.Pause(!paused)
 		t.grid.Progressbar.Update(t.grid.Progressbar.Root.Percent, t.grid.Progressbar.Root.Label, paused)
-		//is confuse but works
-		//t.Current_player_info.Paused = !paused
+		//check this what a brain fuck
+		t.Current_player_info.Paused = !paused
 		t.Current_player_info.Playing = paused
+		//cache_handler.WriteInfo(t.Current_player_info)
 	}
 }
 
@@ -26,6 +27,7 @@ func handleVolumeDown(t *TUI) {
 		if current_volume > 0 {
 			mpv.SetVolume(current_volume - 1)
 			t.Current_player_info.Volume = int32(current_volume - 1)
+			//cache_handler.WriteInfo(t.Current_player_info)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume - 1))
 		}
 	}
@@ -37,6 +39,7 @@ func handleVolumeUp(t *TUI) {
 		if current_volume < 100 {
 			mpv.SetVolume(current_volume + 1)
 			t.Current_player_info.Volume = int32(current_volume + 1)
+			//cache_handler.WriteInfo(t.Current_player_info)
 			t.grid.Volumemixer.UpdatePercent(int(current_volume + 1))
 		}
 	}
@@ -60,10 +63,11 @@ func handlePlay(videoID string) {
 
 func handleProgressBar(t *TUI) {
 	if mpv.CheckIfMpvIsRunning() {
-		isPlaying, _ := mpv.CheckIfIsPlaying()
-		if isPlaying {
+		if t.Current_player_info.Playing {
 			if t.grid.Progressbar.Root.Percent < 100 {
-				t.grid.Progressbar.Root.Percent++
+				secondsTotal := utils.ConvertStringToSeconds(t.Current_player_info.Duration)
+				seconds := utils.ConvertStringToSeconds(t.Current_player_info.PlaybackTime)
+				t.grid.Progressbar.Root.Percent = int(seconds * 100 / secondsTotal)
 				t.Current_player_info.PercentProgresBar = int32(t.grid.Progressbar.Root.Percent)
 			}
 		}
@@ -72,8 +76,7 @@ func handleProgressBar(t *TUI) {
 }
 func handleEachSecond(t *TUI) {
 	if mpv.CheckIfMpvIsRunning() {
-		isPlaying, _ := mpv.CheckIfIsPlaying()
-		if isPlaying {
+		if t.Current_player_info.Playing {
 			seconds, _ := mpv.GetPlayBackTimeSecond()
 			time := utils.ConvertSecondsToString(int(seconds))
 			t.Current_player_info.PlaybackTime = time
@@ -95,8 +98,6 @@ func HandleSelectedVideo(t *TUI, videoname string) {
 	t.Current_player_info.Paused = false
 	t.grid.Plabackinfo.Update(t.Current_player_info.PlaybackTime, duration)
 	t.grid.Progressbar.Update(int(t.Current_player_info.PercentProgresBar), videoname, t.Current_player_info.Playing)
-	duration_seconds := utils.ConvertStringToSeconds(duration)
-	t.tickerProgresBar = &time.NewTicker(time.Second * time.Duration(duration_seconds)).C
 	go handlePlay(id)
 	//gambers
 	time.Sleep(1 * time.Second)

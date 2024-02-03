@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"chipskein/yta-cli/internals/cache_handler"
 	"slices"
 
 	tui "github.com/gizak/termui/v3"
@@ -11,10 +12,7 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 	case tui.KeyboardEvent:
 		var char = e.ID
 		if char == "<Enter>" {
-			var videos, err = t.repository.ListVideos(t.searchTxt)
-			if err != nil {
-				//log.Println(err)
-			}
+			var videos, _ = t.repository.ListVideos(t.searchTxt)
 			t.searchTxt = ""
 			t.grid.Videolist.Update(videos, "Press Enter to Play")
 			t.UpdateScreen()
@@ -48,6 +46,7 @@ func HandleUserCommands(t *TUI, e tui.Event) (shouldExit bool) {
 		t.shouldRenderSearchBar = true
 		t.grid.Videolist.Clean()
 	case "q", "<C-c>", "<Escape>":
+		cache_handler.WriteInfo(t.Current_player_info)
 		return true
 	case "<Enter>":
 		var searchVideoInput = t.grid.Videolist.Root.Rows[t.grid.Videolist.Root.SelectedRow]

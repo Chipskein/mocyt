@@ -55,13 +55,7 @@ func CheckMpvMute() (bool, error) {
 	var b bool = res.Data.(bool)
 	return b, nil
 }
-func CheckIfIsPlaying() (t bool, err error) {
-	tms, err := GetPlayBackTimeSecond()
-	if err != nil {
-		return false, err
-	}
-	return tms != 0, nil
-}
+
 func sendIPCCommand(cmd string) (*IpcJSONMVPResponse, error) {
 	var res = &IpcJSONMVPResponse{}
 	c, err := net.Dial("unix", DEFAULT_MPV_SOCKET_PATH)

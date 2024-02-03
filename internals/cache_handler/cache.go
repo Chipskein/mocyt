@@ -14,7 +14,7 @@ func WriteInfo(pf *PlayerInformation) {
 	if err != nil {
 		log.Fatalln("Failed to encode PlayerInformation:", err)
 	}
-	file, err := os.OpenFile(Cache_file_name, os.O_CREATE|os.O_RDWR, 0660)
+	file, err := os.Create(Cache_file_name)
 	if err != nil {
 		log.Fatalln("Failed to write PlayerInformation:", err)
 	}
@@ -22,9 +22,9 @@ func WriteInfo(pf *PlayerInformation) {
 	if err != nil {
 		log.Fatalln("Failed to write PlayerInformation:", err)
 	}
+	defer file.Close()
 }
 func ReadInfo() *PlayerInformation {
-	// Read the existing address book.
 	in, err := os.ReadFile(Cache_file_name)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)

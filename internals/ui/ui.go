@@ -19,7 +19,6 @@ type TUI struct {
 	Current_player_info   *cache_handler.PlayerInformation
 	tickerProgresBar      *<-chan time.Time
 	tickerSecond          *<-chan time.Time
-	ticker10Second        *<-chan time.Time
 }
 
 func (t *TUI) HandleTUIEvents() {
@@ -39,8 +38,6 @@ func (t *TUI) HandleTUIEvents() {
 			handleProgressBar(t)
 		case <-*t.tickerSecond:
 			handleEachSecond(t)
-		case <-*t.ticker10Second:
-			handleEach10Second(t)
 		}
 
 	}
@@ -80,7 +77,6 @@ func StartUI(repository *youtube.YoutubeRepository) {
 	t.uiEvents = tui.PollEvents()
 	t.tickerProgresBar = &time.NewTicker(time.Second).C
 	t.tickerSecond = &time.NewTicker(time.Second).C
-	t.ticker10Second = &time.NewTicker(10 * time.Second).C
 	t.HandleTUIEvents()
 
 }

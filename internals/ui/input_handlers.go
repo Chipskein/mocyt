@@ -12,7 +12,10 @@ func HandleSearchInputEvents(t *TUI, e tui.Event) {
 	case tui.KeyboardEvent:
 		var char = e.ID
 		if char == "<Enter>" {
-			var videos, _ = t.repository.ListVideos(t.Current_player_info.SearchTxt)
+			var videos, err = t.repository.ListVideos(t.Current_player_info.SearchTxt)
+			if err != nil {
+				panic(err)
+			}
 			t.Current_player_info.SearchResults = videos
 			videos = []string{t.Current_player_info.SearchTxt}
 			videos = append(videos, t.Current_player_info.SearchResults...)

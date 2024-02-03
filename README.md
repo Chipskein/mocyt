@@ -1,17 +1,9 @@
 # TODO
-  * Fazer Cache das informações de playback []
-    * List String ([id] [DURACAO] [TITLE])
-    * PlayBackTime em segundos 
-    * Duracao em segundos
-    * porcentagem da progressbar
-    * porcentagem do volume
-    * playing
-    * paused
-    * PID mpv
-
-  * Ao iniciar o programa verificar se já existe o socket /tmp/mpv-server caso existir pegar informações do cache e atualizar a UI []
-  * Fazer Cache dos videos tocados.  guardar em JSON? []
+  * Fazer Comando de Login
+  * Fazer Comando de LogOff
+  * Arrumar Bugs
   * Arrumar Progress bar funcionar em função da duração da música que está tocando []
-  * Guarda PID do processo MPV para mata-lo quando necessário []
-
+  * Testar Funções com cache
+  * Melhorar UI de pesquisa
+  * Encontrar Alternativa para extrair as informações do pesquisar do youtube sem utilizar a youtubeAPI
   

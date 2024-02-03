@@ -7,6 +7,7 @@ import (
 )
 
 var server *http.Server
+var token_path string
 
 func handlerfunc(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -16,7 +17,7 @@ func handlerfunc(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println(err)
 		}
-		saveToken("token.json", token)
+		saveToken(token_path, token)
 		log.Println("Killing Server")
 		go func() {
 			time.Sleep(10 * time.Second)
@@ -27,7 +28,8 @@ func handlerfunc(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
-func InitServer() {
+func InitServer(token_json_path string) {
+	token_path = token_json_path
 	http.HandleFunc("/", handlerfunc)
 	server = &http.Server{
 		Addr:    ":5000",

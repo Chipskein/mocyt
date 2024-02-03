@@ -14,7 +14,7 @@ var StartCmd = &cobra.Command{
 	Long:  `Simple terminal music player that streams audio from yt`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
-		repo, err := youtube.Init(ctx, "client_secret.json")
+		repo, err := youtube.Init(ctx, CredentialsPath, TokenJsonPath)
 		if err != nil {
 			panic(err)
 		}

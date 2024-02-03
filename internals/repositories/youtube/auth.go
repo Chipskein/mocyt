@@ -53,7 +53,7 @@ func saveToken(file string, token *oauth2.Token) {
 	defer f.Close()
 	json.NewEncoder(f).Encode(token)
 }
-func Login(ctx context.Context, credentials_path string) (err error) {
+func Login(ctx context.Context, credentials_path string, token_json_path string) (err error) {
 	//"client_secret.json"
 	//https: //stackoverflow.com/questions/27585412/can-i-really-not-ship-open-source-with-client-id
 	//fuck youtube
@@ -68,7 +68,7 @@ func Login(ctx context.Context, credentials_path string) (err error) {
 	CONFIG = config
 	go GenAuthLink()
 	time.Sleep(1 * time.Second)
-	go InitServer()
+	go InitServer(token_json_path)
 	for {
 		select {
 		case <-KillChannel:
@@ -82,12 +82,12 @@ func Login(ctx context.Context, credentials_path string) (err error) {
 
 	}
 }
-func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, error) {
+func Init(ctx context.Context, credentials_path string, TokenJsonPath string) (*YoutubeRepository, error) {
 	b, err := os.ReadFile(credentials_path)
 	if err != nil {
 		return nil, err
 	}
-	_, err = os.Stat("token.json")
+	_, err = os.Stat(TokenJsonPath)
 	if os.IsNotExist(err) {
 		fmt.Println("Token file does not exist, please use login command do generate one")
 		os.Exit(0)
@@ -99,7 +99,7 @@ func Init(ctx context.Context, credentials_path string) (*YoutubeRepository, err
 	if err != nil {
 		return nil, err
 	}
-	token, err := tokenFromFile("token.json")
+	token, err := tokenFromFile(TokenJsonPath)
 	if err != nil {
 		return nil, err
 	}

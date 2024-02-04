@@ -25,7 +25,7 @@ func (p *ProgressBar) Reset() {
 
 func InitProgressBar() *ProgressBar {
 	progressBar := widgets.NewGauge()
-	progressBar.Title = "|> Welcome to mfytoc"
+	progressBar.Title = "|> Welcome to mocyt"
 	progressBar.TitleStyle.Fg = tui.ColorWhite
 	progressBar.Percent = 0
 	progressBar.Label = " "

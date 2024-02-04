@@ -1,6 +1,7 @@
 package youtube
 
 import (
+	"chipskein/yta-cli/internals/repositories"
 	"chipskein/yta-cli/internals/utils"
 	"errors"
 	"fmt"
@@ -8,18 +9,11 @@ import (
 	"google.golang.org/api/youtube/v3"
 )
 
-type YoutubeRepository struct {
+type YoutubeDataAPI struct {
 	Service *youtube.Service
 }
 
-type Video struct {
-	Id          string
-	Title       string
-	Duration    string
-	ChannelName string
-}
-
-func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
+func (ytr *YoutubeDataAPI) ListVideos(searchTxt string) ([]string, error) {
 	var videos = []string{}
 	service := ytr.Service
 	if service == nil {
@@ -41,14 +35,13 @@ func (ytr *YoutubeRepository) ListVideos(searchTxt string) ([]string, error) {
 			return videos, fmt.Errorf("could not found any video with id:%s", id)
 		}
 		var title = response.Items[0].Snippet.Title
-		var channelName = response.Items[0].Snippet.ChannelTitle
 		var duration = utils.ConvertPTISO8061(response.Items[0].ContentDetails.Duration)
-		var video = Video{
-			Id:          id,
-			Title:       title,
-			Duration:    duration,
-			ChannelName: channelName}
-		var liststring = fmt.Sprintf("[%s] [%s] %s", video.Id, video.Duration, video.Title)
+		var video = repositories.Video{
+			ID:       id,
+			Title:    title,
+			Duration: duration,
+		}
+		var liststring = fmt.Sprintf("[%s] [%s] %s", video.ID, video.Duration, video.Title)
 		videos = append(videos, liststring)
 
 	}

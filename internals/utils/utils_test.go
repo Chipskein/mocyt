@@ -43,3 +43,19 @@ func TestConvertStringToSeconds(t *testing.T) {
 		t.Fatalf("Duration %d is not equal to %s\n", duration, "2h 40s")
 	}
 }
+
+func TestConvertHHMMSSToListString(t *testing.T) {
+	duration := ConvertHHMMSSToListString("03:30")
+	if duration != "3m 30s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "3m 30s")
+	}
+	duration = ConvertHHMMSSToListString("02:03:30")
+	if duration != "2h 3m 30s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "2h 3m 30s")
+	}
+
+	duration = ConvertHHMMSSToListString("02:00:30")
+	if duration != "2h 0m 30s" {
+		t.Fatalf("Duration %s is not equal to %s\n", duration, "2h 0m 30s")
+	}
+}

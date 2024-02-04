@@ -84,7 +84,7 @@ func Login(ctx context.Context, credentials_path string, token_json_path string)
 
 	}
 }
-func Init(ctx context.Context, credentials_path string, TokenJsonPath string) (*YoutubeRepository, error) {
+func Init(ctx context.Context, credentials_path string, TokenJsonPath string) (*YoutubeDataAPI, error) {
 	b, err := os.ReadFile(credentials_path)
 	if err != nil {
 		return nil, err
@@ -110,5 +110,5 @@ func Init(ctx context.Context, credentials_path string, TokenJsonPath string) (*
 	if err != nil {
 		return nil, err
 	}
-	return &YoutubeRepository{Service: service}, nil
+	return &YoutubeDataAPI{Service: service}, nil
 }

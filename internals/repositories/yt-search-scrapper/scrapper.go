@@ -1,6 +1,8 @@
 package ytsearchscrapper
 
 import (
+	"chipskein/yta-cli/internals/repositories"
+	"chipskein/yta-cli/internals/utils"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,69 +11,53 @@ import (
 	"strings"
 )
 
-type YoutubeSearch struct {
-	SearchTerms string
-	MaxResults  int
-	Videos      []Video
-}
+type YoutubeScrapper struct{}
 
-type Video struct {
-	ID       string `json:"id"`
-	Title    string `json:"title"`
-	Duration string `json:"duration"`
-}
-
-func NewYoutubeSearch(searchTerms string, maxResults int) *YoutubeSearch {
-	return &YoutubeSearch{
-		SearchTerms: searchTerms,
-		MaxResults:  maxResults,
-		Videos:      search(searchTerms, maxResults),
+func (ytc *YoutubeScrapper) ListVideos(searchTxt string) (videos []string, err error) {
+	videos, err = search(searchTxt)
+	if err != nil {
+		return []string{}, err
 	}
+	return videos, nil
 }
 
-func search(searchTerms string, maxResults int) []Video {
+func search(searchTerms string) (videos []string, err error) {
 	encodedSearch := url.QueryEscape(searchTerms)
 	baseURL := "https://youtube.com"
 	url := fmt.Sprintf("%s/results?search_query=%s", baseURL, encodedSearch)
-
+	videos = []string{}
 	var responseText string
 	for !strings.Contains(responseText, "ytInitialData") {
 		resp, err := http.Get(url)
 		if err != nil {
 			fmt.Println("Error fetching YouTube search results:", err)
-			return nil
+			return videos, err
 		}
 		defer resp.Body.Close()
-
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			fmt.Println("Error reading response body:", err)
-			return nil
+			return videos, err
 		}
-
 		responseText = string(body)
 	}
-
-	results := parseHTML(responseText, maxResults)
-	return results
-}
-func indexAt(s, sep string, n int) int {
-	idx := strings.Index(s[n:], sep)
-	if idx > -1 {
-		idx += n
+	videos, err = parseHTML(responseText)
+	if err != nil {
+		return videos, err
 	}
-	return idx
+	return videos, nil
 }
-func parseHTML(response string, maxResults int) []Video {
-	var results []Video
+
+func parseHTML(response string) (videos []string, err error) {
+	var results = []string{}
 	start := strings.Index(response, "ytInitialData") + len("ytInitialData") + 3
-	end := indexAt(response, "};", start) + 1
+	end := utils.IndexAt(response, "};", start) + 1
 	jsonStr := response[start:end]
 	var data map[string]interface{}
-	err := json.Unmarshal([]byte(jsonStr), &data)
+	err = json.Unmarshal([]byte(jsonStr), &data)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
-		return nil
+		return results, err
 	}
 	contents := data["contents"].(map[string]interface{})
 	twoColumnSearchResultsRenderer := contents["twoColumnSearchResultsRenderer"].(map[string]interface{})
@@ -90,15 +76,16 @@ func parseHTML(response string, maxResults int) []Video {
 					duration := videoMap["lengthText"].(map[string]interface{})["simpleText"].(string)
 					titleMap := videoMap["title"].(map[string]interface{})["runs"].([]interface{})[0].(map[string]interface{})
 					title := titleMap["text"].(string)
-					video := Video{
+					video := repositories.Video{
 						ID:       videoId,
 						Title:    title,
-						Duration: duration,
+						Duration: utils.ConvertHHMMSSToListString(duration),
 					}
-					results = append(results, video)
+					var liststring = fmt.Sprintf("[%s] [%s] %s", video.ID, video.Duration, video.Title)
+					results = append(results, liststring)
 				}
 			}
 		}
 	}
-	return results
+	return results, nil
 }

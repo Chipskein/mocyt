@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -63,4 +64,32 @@ func ConvertStringToSeconds(duration string) int {
 		}
 	}
 	return seconds
+}
+
+func IndexAt(s, sep string, n int) int {
+	idx := strings.Index(s[n:], sep)
+	if idx > -1 {
+		idx += n
+	}
+	return idx
+}
+
+func ConvertHHMMSSToListString(t string) string {
+	//input 03:30
+	var duration string = ""
+	nDoublePoint := strings.Count(t, ":")
+	tmp := strings.Split(t, ":")
+	switch nDoublePoint {
+	case 2:
+		hh, _ := strconv.Atoi(tmp[0])
+		mm, _ := strconv.Atoi(tmp[1])
+		ss, _ := strconv.Atoi(tmp[2])
+		duration = fmt.Sprintf("%dh %dm %ds", hh, mm, ss)
+	case 1: //mm:ss
+		mm, _ := strconv.Atoi(tmp[0])
+		ss, _ := strconv.Atoi(tmp[1])
+		duration = fmt.Sprintf("%dm %ds", mm, ss)
+	}
+	//output 3m 30s
+	return duration
 }

@@ -9,11 +9,12 @@ Simple terminal player that plays music from yt
  * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
  * [mpv](https://github.com/mpv-player/mpv)
 ### Install
- After installing the required programs, run:
+**Linux:**
+  After installing the required programs, run:
 
-     git clone https://github.com/Chipskein/mocyt.git
-     cd mocyt
-     sudo make install
+      git clone https://github.com/Chipskein/mocyt.git
+      cd mocyt
+      sudo make install
 ### Usage
      mocyt [command]
 ### Commands

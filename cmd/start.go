@@ -32,6 +32,8 @@ var StartCmd = &cobra.Command{
 				panic(err)
 			}
 			repo = api_repo
+		default:
+			panic("Invalid SEARCH_MODE")
 		}
 		ui.StartUI(repo)
 	},

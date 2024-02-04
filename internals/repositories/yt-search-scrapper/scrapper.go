@@ -98,9 +98,7 @@ func parseHTML(response string, maxResults int) []Video {
 					results = append(results, video)
 				}
 			}
-
 		}
-
 	}
 	return results
 }

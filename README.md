@@ -2,4 +2,4 @@
 # TODO
   * Arrumar Bugs
   * Testar Funções com cache
-  * Integrar youtube-search Scrapper com o resto do sistema   
+  * Implementar Função de Download Nativo para não precisar do ytdlp

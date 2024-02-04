@@ -13,10 +13,18 @@ func KillThemAll() {
 		if err != nil {
 			log.Println(err)
 		}
-		cache := cache_handler.CheckIfCacheFileExists()
-		if cache {
-			os.Remove(cache_handler.Cache_FILE_PATH)
+		err = os.Remove(mpv.DEFAULT_MPV_SOCKET_PATH)
+		if err != nil {
+			log.Println(err)
 		}
-		os.Remove(mpv.DEFAULT_MPV_SOCKET_PATH)
 	}
+
+	cache := cache_handler.CheckIfCacheFileExists()
+	if cache {
+		err := os.Remove(cache_handler.CACHE_FILE_PATH)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
 }

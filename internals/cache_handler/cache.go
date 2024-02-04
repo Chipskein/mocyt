@@ -8,14 +8,14 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-var Cache_FILE_PATH = path.Join(os.TempDir(), "cache-playback-info-mocyt")
+var CACHE_FILE_PATH = path.Join(os.TempDir(), "cache-playback-info-mocyt")
 
 func WriteInfo(pf *PlayerInformation) {
 	out, err := proto.Marshal(pf)
 	if err != nil {
 		log.Fatalln("Failed to encode PlayerInformation:", err)
 	}
-	file, err := os.Create(Cache_FILE_PATH)
+	file, err := os.Create(CACHE_FILE_PATH)
 	if err != nil {
 		log.Fatalln("Failed to write PlayerInformation:", err)
 	}
@@ -26,7 +26,7 @@ func WriteInfo(pf *PlayerInformation) {
 	defer file.Close()
 }
 func ReadInfo() *PlayerInformation {
-	in, err := os.ReadFile(Cache_FILE_PATH)
+	in, err := os.ReadFile(CACHE_FILE_PATH)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}
@@ -37,8 +37,10 @@ func ReadInfo() *PlayerInformation {
 	return info
 }
 func CheckIfCacheFileExists() bool {
-	if _, err := os.Stat(Cache_FILE_PATH); os.IsNotExist(err) {
+	if _, err := os.Stat(CACHE_FILE_PATH); os.IsNotExist(err) {
 		return false
+	} else if err != nil {
+		log.Println(err)
 	}
 	return true
 }

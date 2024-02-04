@@ -9,7 +9,7 @@ Simple terminal player that plays music from yt
  * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
  * [mpv](https://github.com/mpv-player/mpv)
 ### Install
- After Installing requirements programs run:
+ After installing the required programs, run:
 
      git clone https://github.com/Chipskein/mocyt.git
      cd mocyt
@@ -30,20 +30,20 @@ Simple terminal player that plays music from yt
 | --SEARCH_MODE | -s        | 1                            | Sets SEARCH_MODE flag |
 
 ### SEARCH_MODE
-mocyt has support to two modes for perform youtube searchs
+MOCYT supports two modes for performing YouTube searches:
  * SCRAPPER_MODE(1):
-     * Utilizes a Web Scrapper to get results from youtube search
+     * Utilizes a web scraper to get results from YouTube search.
  * API_MODE(2):
-     * Utilizes YoutubeDataAPi to get results from youtube search requires addtional configuration to utilize
+     * Utilizes YouTube Data API to get results from YouTube search, requiring additional configuration to utilize.
 ### Setup to use API_MODE
  * Create Google OAuth Client Credentials at Google Console [you can follow this tutorial from google](https://support.google.com/cloud/answer/6158849)
- * Run login commando to create token.json
+ * Run login command to create token.json
    
        mocyt start -c <PATH_TO_CLIENT_CREDENTIALS> -t <PATH_TO_TOKEN_JSON>
  * Run start
    
         mocyt start -s 2 -c <PATH_TO_CLIENT_CREDENTIALS> -t <PATH_TO_TOKEN_JSON>
-   
+ 
 ### TODO
   * Arrumar Bugs
   * Testar Funções com cache

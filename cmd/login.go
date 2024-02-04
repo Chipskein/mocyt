@@ -13,9 +13,8 @@ var CredentialsPath string = "client_secret.json"
 var TokenJsonPath string = "token.json"
 var LoginCmd = &cobra.Command{
 	Use:   "login",
-	Short: "Login with youtube Account",
-	Long: `You need to login with youtube to utilize this program because it uses Youtube Data API 
-	for search videos`,
+	Short: "Create a token.json to utilize API_MODE",
+	Long:  `To use API_MODE you need to create a token.json file to access YoutubeDataAPI`,
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 		err := youtube.Login(ctx, CredentialsPath, TokenJsonPath)

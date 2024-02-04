@@ -8,7 +8,7 @@ import (
 
 var KillCmd = &cobra.Command{
 	Use:   "kill",
-	Short: "Kill mfytoc",
+	Short: "Kill mocyt",
 	Long:  `Will kill any instance of MPV currently playing and will delete cached files and mpv socket`,
 	Run: func(cmd *cobra.Command, args []string) {
 		internals.KillThemAll()

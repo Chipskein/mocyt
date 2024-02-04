@@ -15,7 +15,7 @@ func KillThemAll() {
 		}
 		cache := cache_handler.CheckIfCacheFileExists()
 		if cache {
-			os.Remove(cache_handler.Cache_file_name)
+			os.Remove(cache_handler.Cache_FILE_PATH)
 		}
 		os.Remove(mpv.DEFAULT_MPV_SOCKET_PATH)
 	}

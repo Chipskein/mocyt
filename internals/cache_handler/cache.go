@@ -3,18 +3,19 @@ package cache_handler
 import (
 	"log"
 	"os"
+	"path"
 
 	"google.golang.org/protobuf/proto"
 )
 
-const Cache_file_name = "/tmp/cache-ytacli"
+var Cache_FILE_PATH = path.Join(os.TempDir(), "cache-playback-info-mocyt")
 
 func WriteInfo(pf *PlayerInformation) {
 	out, err := proto.Marshal(pf)
 	if err != nil {
 		log.Fatalln("Failed to encode PlayerInformation:", err)
 	}
-	file, err := os.Create(Cache_file_name)
+	file, err := os.Create(Cache_FILE_PATH)
 	if err != nil {
 		log.Fatalln("Failed to write PlayerInformation:", err)
 	}
@@ -25,7 +26,7 @@ func WriteInfo(pf *PlayerInformation) {
 	defer file.Close()
 }
 func ReadInfo() *PlayerInformation {
-	in, err := os.ReadFile(Cache_file_name)
+	in, err := os.ReadFile(Cache_FILE_PATH)
 	if err != nil {
 		log.Fatalln("Error reading file:", err)
 	}
@@ -36,7 +37,7 @@ func ReadInfo() *PlayerInformation {
 	return info
 }
 func CheckIfCacheFileExists() bool {
-	if _, err := os.Stat(Cache_file_name); os.IsNotExist(err) {
+	if _, err := os.Stat(Cache_FILE_PATH); os.IsNotExist(err) {
 		return false
 	}
 	return true

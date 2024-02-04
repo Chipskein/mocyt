@@ -8,12 +8,13 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path"
 	"reflect"
 )
 
 // Conferir JSON IPC do mpv
 // https://github.com/mpv-player/mpv/blob/master/DOCS/man/ipc.rst
-const DEFAULT_MPV_SOCKET_PATH = "/tmp/mpv-socket"
+var DEFAULT_MPV_SOCKET_PATH = path.Join(os.TempDir(), "mocyt-mpv-socket")
 
 type IpcJSONMVPResponse struct {
 	Data  any    `json:"data"`

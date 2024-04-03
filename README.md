@@ -46,5 +46,5 @@ MOCYT supports two modes for performing YouTube searches:
         mocyt start -s 2 -c <PATH_TO_CLIENT_CREDENTIALS> -t <PATH_TO_TOKEN_JSON>
  
 ### TODO
-  * Arrumar Bugs
-  * Testar Funções com cache
+  * [ ] Containerize Application with docker
+  * [ ] Deploy Image to Docker.hub

@@ -1,8 +1,9 @@
 ## MOCYT(Music on Console from YT)
 ### Description
 Simple terminal player that plays music from yt 
-### [Demo](https://www.youtube.com/watch?v=N2hF2RLsP3o)
-![demo.gif](https://github.com/Chipskein/mocyt/blob/master/docs/demo.gif?raw=true)
+
+https://github.com/Chipskein/mocyt/assets/47486707/f43cc476-9bdd-4f29-9a6a-4259ed821878
+
 ### Requirements
  * Go
  * GNU Make

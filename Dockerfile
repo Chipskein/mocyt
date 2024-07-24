@@ -16,7 +16,10 @@ RUN echo "deb http://apt.fruit.je/debian bullseye mpv" >> /etc/apt/sources.list.
 RUN apt update -y
 RUN apt install mpv -y
 RUN mpv --version
-ENTRYPOINT [ "tail","-f","/dev/null" ]
+#ENTRYPOINT [ "tail","-f","/dev/null" ]
+#Install mocyt
+RUN make install
+RUN mocyt --version
 #docker build -t mocyt .
 #docker run --rm -it -d --privileged=true --device=/dev/snd:/dev/snd --name mocyt mocyt
 #docker exec -it mocyt bash

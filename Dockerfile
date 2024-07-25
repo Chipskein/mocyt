@@ -19,7 +19,6 @@ RUN mpv --version
 RUN make install
 #docker build -t mocyt .
 #docker run --rm -it -d --privileged=true --device=/dev/snd:/dev/snd --name mocyt mocyt
-#docker exec -it mocyt bash
-
-
+#docker exec -it mocyt mocyt start
+#docker exec -it mocyt mocyt kill
 

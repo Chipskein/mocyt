@@ -1,6 +1,6 @@
 FROM golang:bullseye
 WORKDIR /app
-COPY * /app
+COPY . /app
 #install yt-dlp
 RUN apt update
 RUN apt install python3 curl ffmpeg libsndfile1-dev alsa-utils -y

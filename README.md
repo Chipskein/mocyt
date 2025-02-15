@@ -10,7 +10,6 @@ https://github.com/Chipskein/mocyt/assets/47486707/f43cc476-9bdd-4f29-9a6a-4259e
 
 ##### Requirements for linux build
  * Go
- * GNU Make
  * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
  * [mpv](https://github.com/mpv-player/mpv)
 

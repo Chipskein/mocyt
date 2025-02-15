@@ -4,18 +4,52 @@ Simple terminal player that plays music from yt
 
 https://github.com/Chipskein/mocyt/assets/47486707/f43cc476-9bdd-4f29-9a6a-4259ed821878
 
-### Requirements
+
+### Install
+**Linux:**
+
+##### Requirements for linux build
  * Go
  * GNU Make
  * [yt-dlp](https://github.com/yt-dlp/yt-dlp)
  * [mpv](https://github.com/mpv-player/mpv)
-### Install
-**Linux:**
+
+
   After installing the required programs, run:
 
-      git clone https://github.com/Chipskein/mocyt.git
-      cd mocyt
-      sudo make install
+      git clone https://github.com/Chipskein/mocyt.git &&
+      cd mocyt &&
+      go build -o mocyt main.go &&
+      sudo cp mocyt /usr/bin/mocyt
+      
+
+**Docker:**
+
+  * Pull image
+
+        docker pull chipskein/mocyt
+
+  * Start container
+
+      * Linux with Docker
+
+
+            docker run --rm -it -d --privileged=true -v /dev/snd:/dev/snd -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native -v ~/.config/pulse/cookie:/root/.config/pulse/cookie --name mocyt chipskein/mocyt
+
+      * WSL(Windows 11)
+
+
+            wsl docker run --rm -it -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ --name mocyt chipskein/mocyt
+
+
+
+  * Enter the container
+
+        docker exec -it mocyt bash
+
+  * After that you can use mocyt inside of the container
+
+
 ### Usage
      mocyt [command]
 ### Commands
@@ -46,6 +80,3 @@ MOCYT supports two modes for performing YouTube searches:
    
         mocyt start -s 2 -c <PATH_TO_CLIENT_CREDENTIALS> -t <PATH_TO_TOKEN_JSON>
  
-### TODO
-  * [ ] Containerize Application with docker
-  * [ ] Deploy Image to Docker.hub

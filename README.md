@@ -24,6 +24,14 @@ https://github.com/Chipskein/mocyt/assets/47486707/f43cc476-9bdd-4f29-9a6a-4259e
       
 
 **Docker:**
+  
+  **In case of use in windows login in wsl before**
+  
+      wsl
+  
+
+  
+  
 
   * Pull image
 
@@ -36,10 +44,10 @@ https://github.com/Chipskein/mocyt/assets/47486707/f43cc476-9bdd-4f29-9a6a-4259e
 
             docker run --rm -it -d --privileged=true -v /dev/snd:/dev/snd -e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native -v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native -v ~/.config/pulse/cookie:/root/.config/pulse/cookie --name mocyt chipskein/mocyt
 
-      * WSL(Windows 11)
+      * WSL(Windows 10 e 11)
 
 
-            wsl docker run --rm -it -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ --name mocyt chipskein/mocyt
+            docker run --rm -it -d -e "PULSE_SERVER=/mnt/wslg/PulseServer" -v /mnt/wslg/:/mnt/wslg/ --name mocyt chipskein/mocyt
 
 
 

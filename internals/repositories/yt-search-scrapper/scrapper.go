@@ -1,14 +1,15 @@
 package ytsearchscrapper
 
 import (
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/utils"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/Chipskein/mocyt/internals/repositories"
+	"github.com/Chipskein/mocyt/internals/utils"
 )
 
 type YoutubeScrapper struct{}

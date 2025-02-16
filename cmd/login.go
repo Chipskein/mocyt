@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"chipskein/yta-cli/internals/repositories/youtube"
 	"context"
 	"fmt"
 	"os"
+
+	"github.com/Chipskein/mocyt/internals/repositories/youtube"
 
 	"github.com/spf13/cobra"
 )

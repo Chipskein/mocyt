@@ -1,4 +1,4 @@
-module chipskein/yta-cli
+module github.com/Chipskein/mocyt
 
 go 1.21.6
 

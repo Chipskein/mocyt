@@ -1,10 +1,11 @@
 package youtube
 
 import (
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/utils"
 	"errors"
 	"fmt"
+
+	"github.com/Chipskein/mocyt/internals/repositories"
+	"github.com/Chipskein/mocyt/internals/utils"
 
 	"google.golang.org/api/youtube/v3"
 )

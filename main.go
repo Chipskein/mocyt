@@ -1,9 +1,10 @@
 package main
 
 import (
-	"chipskein/yta-cli/cmd"
 	"fmt"
 	"os"
+
+	"github.com/Chipskein/mocyt/cmd"
 
 	"github.com/spf13/cobra"
 )

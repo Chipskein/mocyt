@@ -1,12 +1,13 @@
 package ui
 
 import (
-	"chipskein/yta-cli/internals/cache_handler"
-	"chipskein/yta-cli/internals/mpv"
-	"chipskein/yta-cli/internals/utils"
-	"chipskein/yta-cli/internals/ytdlp"
 	"fmt"
 	"time"
+
+	"github.com/Chipskein/mocyt/internals/cache_handler"
+	"github.com/Chipskein/mocyt/internals/mpv"
+	"github.com/Chipskein/mocyt/internals/utils"
+	"github.com/Chipskein/mocyt/internals/ytdlp"
 )
 
 func handlePause(t *TUI) {

@@ -1,14 +1,15 @@
 package ytsearchscrapper
 
 import (
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/utils"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/Chipskein/mocyt/internals/repositories"
+	"github.com/Chipskein/mocyt/internals/utils"
 )
 
 type YoutubeScrapper struct{}
@@ -43,38 +44,120 @@ func search(searchTerms string) (videos []string, err error) {
 	}
 	videos, err = parseHTML(responseText)
 	if err != nil {
-		return videos, err
+		return videos, nil
 	}
 	return videos, nil
 }
 
 func parseHTML(response string) (videos []string, err error) {
 	var results = []string{}
+	startFound := strings.Contains(response, "ytInitialData")
+	if !startFound {
+		fmt.Println("ytInitialData not found in response")
+		return results, fmt.Errorf("ytInitialData not found in response")
+	}
 	start := strings.Index(response, "ytInitialData") + len("ytInitialData") + 3
 	end := utils.IndexAt(response, "};", start) + 1
 	jsonStr := response[start:end]
-	var data map[string]interface{}
+	var data map[string]any
 	err = json.Unmarshal([]byte(jsonStr), &data)
 	if err != nil {
 		fmt.Println("Error parsing JSON:", err)
 		return results, err
 	}
-	contents := data["contents"].(map[string]interface{})
-	twoColumnSearchResultsRenderer := contents["twoColumnSearchResultsRenderer"].(map[string]interface{})
-	primaryContents := twoColumnSearchResultsRenderer["primaryContents"].(map[string]interface{})
-	sectionListRenderer := primaryContents["sectionListRenderer"].(map[string]interface{})
-	contents_arr := sectionListRenderer["contents"].([]interface{})
+	contents := data["contents"].(map[string]any)
+	if contents == nil {
+		fmt.Println("contents not found in JSON")
+		return results, fmt.Errorf("contents not found in JSON")
+	}
+
+	twoColumnSearchResultsRenderer := contents["twoColumnSearchResultsRenderer"].(map[string]any)
+	if twoColumnSearchResultsRenderer == nil {
+		fmt.Println("twoColumnSearchResultsRenderer not found in JSON")
+		return results, fmt.Errorf("twoColumnSearchResultsRenderer not found in JSON")
+	}
+
+	primaryContents := twoColumnSearchResultsRenderer["primaryContents"].(map[string]any)
+	if primaryContents == nil {
+		fmt.Println("primaryContents not found in JSON")
+		return results, fmt.Errorf("primaryContents not found in JSON")
+	}
+
+	sectionListRenderer := primaryContents["sectionListRenderer"].(map[string]any)
+	if sectionListRenderer == nil {
+		fmt.Println("sectionListRenderer not found in JSON")
+		return results, fmt.Errorf("sectionListRenderer not found in JSON")
+	}
+
+	contents_arr := sectionListRenderer["contents"].([]any)
+	if contents_arr == nil {
+		fmt.Println("contents not found in JSON")
+		return results, fmt.Errorf("contents_arr not found in JSON")
+	}
+
 	for _, content := range contents_arr {
-		itemSectionRenderer := content.(map[string]interface{})["itemSectionRenderer"]
+		itemSectionRenderer := content.(map[string]any)["itemSectionRenderer"]
 		if itemSectionRenderer != nil {
-			contents_renderer := itemSectionRenderer.(map[string]interface{})["contents"].([]interface{})
+			contents_renderer := itemSectionRenderer.(map[string]any)["contents"].([]any)
+			if contents_renderer == nil {
+				fmt.Println("contents_renderer not found in JSON")
+				continue
+			}
 			for _, item := range contents_renderer {
-				videoRenderer := item.(map[string]interface{})["videoRenderer"]
+				if item == nil {
+					fmt.Println("item not found in JSON")
+					continue
+				}
+				videoRenderer := item.(map[string]any)["videoRenderer"]
 				if videoRenderer != nil {
-					videoMap := videoRenderer.(map[string]interface{})
+					videoMap := videoRenderer.(map[string]any)
+					if videoMap == nil {
+						fmt.Println("videoMap not found in JSON")
+						continue
+					}
+
+					if videoMap["videoId"] == nil {
+						fmt.Println("videoId not found in JSON")
+						continue
+					}
+
 					videoId := videoMap["videoId"].(string)
-					duration := videoMap["lengthText"].(map[string]interface{})["simpleText"].(string)
-					titleMap := videoMap["title"].(map[string]interface{})["runs"].([]interface{})[0].(map[string]interface{})
+					if videoMap["lengthText"] == nil {
+						fmt.Println("lengthText not found in JSON")
+						continue
+					}
+
+					lengthTxtMap := videoMap["lengthText"].(map[string]any)
+					if lengthTxtMap == nil {
+						fmt.Println("lengthTxtMap not found in JSON")
+						continue
+					}
+
+					if lengthTxtMap["simpleText"] == nil {
+						fmt.Println("simpleText not found in JSON")
+						continue
+					}
+					duration := lengthTxtMap["simpleText"].(string)
+
+					if videoMap["title"] == nil {
+						fmt.Println("title not found in JSON")
+						continue
+					}
+					titleMap1 := videoMap["title"].(map[string]any)
+					if titleMap1["runs"] == nil {
+						fmt.Println("runs not found in JSON")
+						continue
+					}
+					titleRunArr := titleMap1["runs"].([]any)
+					if len(titleRunArr) == 0 {
+						fmt.Println("titleRunArr not found in JSON")
+						continue
+					}
+					titleMap := titleRunArr[0].(map[string]any)
+					if titleMap["text"] == nil {
+						fmt.Println("text not found in JSON")
+						continue
+					}
 					title := titleMap["text"].(string)
 					video := repositories.Video{
 						ID:       videoId,

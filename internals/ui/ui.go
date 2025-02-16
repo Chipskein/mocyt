@@ -1,11 +1,12 @@
 package ui
 
 import (
-	"chipskein/yta-cli/internals/cache_handler"
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/ui/components"
 	"log"
 	"time"
+
+	"github.com/Chipskein/mocyt/internals/cache_handler"
+	"github.com/Chipskein/mocyt/internals/repositories"
+	"github.com/Chipskein/mocyt/internals/ui/components"
 
 	tui "github.com/gizak/termui/v3"
 )

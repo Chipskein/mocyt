@@ -1,11 +1,12 @@
 package cmd
 
 import (
-	"chipskein/yta-cli/internals/repositories"
-	"chipskein/yta-cli/internals/repositories/youtube"
-	ytsearchscrapper "chipskein/yta-cli/internals/repositories/yt-search-scrapper"
-	"chipskein/yta-cli/internals/ui"
 	"context"
+
+	"github.com/Chipskein/mocyt/internals/repositories"
+	"github.com/Chipskein/mocyt/internals/repositories/youtube"
+	ytsearchscrapper "github.com/Chipskein/mocyt/internals/repositories/yt-search-scrapper"
+	"github.com/Chipskein/mocyt/internals/ui"
 
 	"github.com/spf13/cobra"
 )

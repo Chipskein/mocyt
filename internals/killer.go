@@ -1,10 +1,11 @@
 package internals
 
 import (
-	"chipskein/yta-cli/internals/cache_handler"
-	"chipskein/yta-cli/internals/mpv"
 	"log"
 	"os"
+
+	"github.com/Chipskein/mocyt/internals/cache_handler"
+	"github.com/Chipskein/mocyt/internals/mpv"
 )
 
 func KillThemAll() {

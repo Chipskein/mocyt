@@ -1,8 +1,9 @@
 package ui
 
 import (
-	"chipskein/yta-cli/internals/cache_handler"
 	"slices"
+
+	"github.com/Chipskein/mocyt/internals/cache_handler"
 
 	tui "github.com/gizak/termui/v3"
 )

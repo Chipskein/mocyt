@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"chipskein/yta-cli/internals"
+	"github.com/Chipskein/mocyt/internals"
 
 	"github.com/spf13/cobra"
 )
